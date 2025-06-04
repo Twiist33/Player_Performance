@@ -18,9 +18,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Charger les  fichiers PDF présent à la fin de la page d'acceuil / Load PDF files at the end of the home page
-with open("Documentation/Documentation_Player_Performance_France.pdf", "rb") as file:
+with open("documentation/Documentation_Player_Performance_France.pdf", "rb") as file:
     doc = file.read()
-with open("Documentation/Documentation_Player_Performance_English.pdf", "rb") as file:
+with open("documentation/Documentation_Player_Performance_English.pdf", "rb") as file:
     doc_eng = file.read()
 with open("CV/CV_FR_Romain_Traboul.pdf", "rb") as file:
     cv_data_fr = file.read()
