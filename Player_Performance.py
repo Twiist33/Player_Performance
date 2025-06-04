@@ -302,7 +302,7 @@ def home():
             Pour plus de détails sur ce projet, vous avez à votre disposition :
             <ul>
                 <li><em>La documentation du projet</em></li>
-                <li><a href="https://github.com/Twiist33/Data_Viz_France" target="_blank">Le code associé à l'application</a></li>
+                <li><a href="https://player-performance-big-5-24-25-romain-traboul.streamlit.app/" target="_blank">Le code associé à l'application</a></li>
                 <li><em>Et enfin mon CV</em></li>
             </ul>
             """,
@@ -376,7 +376,7 @@ def home():
             For more details about this project, you can refer to:
             <ul>
                 <li><em>The project documentation</em></li>
-                <li><a href="https://github.com/Twiist33/Data_Viz_France" target="_blank">The code used to build the application</a></li>
+                <li><a href="https://player-performance-big-5-24-25-romain-traboul.streamlit.app/" target="_blank">The code used to build the application</a></li>
                 <li><em>My resume</em></li>
             </ul>
             """, unsafe_allow_html=True
