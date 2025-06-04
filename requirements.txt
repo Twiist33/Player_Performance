@@ -1,8 +1,8 @@
-pandas
-numpy
 streamlit
-streamlit_option_menu
+streamlit-option-menu
 matplotlib
+pandas
 plotly
 seaborn
-sklearn
+numpy
+scikit-learn
