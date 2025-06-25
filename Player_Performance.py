@@ -1636,6 +1636,21 @@ def ranking():
             - **Tkl+Int_per90** : Tacles + interceptions par 90 minutes
                 """)
 
+            # Appliquer des conditions minimales sur les métriques spécifiques
+            thresholds = {
+                'Cmp%': ('Cmp', 250),
+                'Tkl%': ('Tkl', 40),
+                'Won%': ('Won', 30),
+                'Succ%': ('Succ', 30)
+            }
+
+            if selected_stat in thresholds:
+                col, min_value = thresholds[selected_stat]
+                
+                # S'assurer que la colonne existe et que les valeurs sont numériques
+                if col in filtered_df.columns:
+                    filtered_df = filtered_df[pd.to_numeric(filtered_df[col], errors='coerce') > min_value]
+                    st.markdown(f"<small>**Filtre :** <code>{col} &gt; {min_value}</code></small>", unsafe_allow_html=True)
             # Liste de colonnes
             df_stat = filtered_df[
                 ['name', 'image_url', 'Age', 'country_of_citizenship', 'current_club_name',
@@ -1650,6 +1665,10 @@ def ranking():
             # Utilisation du format de market_value
             df_stat['market_value_in_eur'] = df_stat['market_value_in_eur'].apply(format_market_value)
 
+            # Filtrage spécial si la statistique sélectionnée est reservée aux gardiens
+            if selected_stat in ['Saves_per90', 'Save%', '/90', 'PSxG+/-','AvgLen', 'Launch%', 'Stp%', '#OPA_per90', 'CS%']:
+                df_stat = df_stat[df_stat['sub_position'] == 'Goalkeeper']
+    
             # Filtrage spécial si la statistique sélectionnée est GA_per90
             if selected_stat == 'GA_per90':
                 df_stat = df_stat[df_stat['sub_position'] == 'Goalkeeper']
@@ -1658,7 +1677,7 @@ def ranking():
                 df_stat = df_stat.sort_values(by=selected_stat, ascending=False)
 
             # Cas particuliers : exclusion des gardiens pour certaines statistiques
-            if selected_stat in ['Won%', 'Tkl%']:
+            if selected_stat in ['Won%', 'Tkl%','Succ%']:
                 df_stat = df_stat[df_stat['sub_position'] != 'Goalkeeper']
 
             top3 = df_stat.head(3).reset_index(drop=True) # Affichage du podium
@@ -1885,6 +1904,23 @@ def ranking():
                 - **Tkl+Int_per90**: Tackles + interceptions per 90 minutes
                 """)
 
+            # Apply minimum conditions to specific metrics
+            thresholds = {
+                'Cmp%': ('Cmp', 250),
+                'Tkl%': ('Tkl', 40),
+                'Won%': ('Won', 30),
+                'Succ%': ('Succ', 30)
+            }
+
+            if selected_stat in thresholds:
+                col, min_value = thresholds[selected_stat]
+                
+                # Check that the column exists and that the values are numeric
+                if col in filtered_df.columns:
+                    filtered_df = filtered_df[pd.to_numeric(filtered_df[col], errors='coerce') > min_value]
+                    st.markdown(f"<small>**Filtre :** <code>{col} &gt; {min_value}</code></small>", unsafe_allow_html=True)
+
+
             # Selecting columns
             df_stat = filtered_df[
                 ['name', 'image_url', 'Age', 'country_of_citizenship', 'current_club_name',
@@ -1894,6 +1930,10 @@ def ranking():
 
             df_stat['market_value_in_eur'] = df_stat['market_value_in_eur'].apply(format_market_value) # Format market value
 
+            # Special filtering if the selected statistic is reserved for goalkeepers
+            if selected_stat in ['Saves_per90', 'Save%', '/90', 'PSxG+/-','AvgLen', 'Launch%', 'Stp%', '#OPA_per90', 'CS%']:
+                df_stat = df_stat[df_stat['sub_position'] == 'Goalkeeper']
+                
             # Special filtering if the selected statistic is GA_per90
             if selected_stat == 'GA_per90':
                 df_stat = df_stat[df_stat['sub_position'] == 'Goalkeeper']
@@ -1902,7 +1942,7 @@ def ranking():
                 df_stat = df_stat.sort_values(by=selected_stat, ascending=False)
 
             # Special cases: exclusion of goalkeepers for certain statistics
-            if selected_stat in ['Won%', 'Tkl%']:
+            if selected_stat in ['Won%', 'Tkl%','Succ%']:
                 df_stat = df_stat[df_stat['sub_position'] != 'Goalkeeper']
 
             top3 = df_stat.head(3).reset_index(drop=True) # Displaying podium
