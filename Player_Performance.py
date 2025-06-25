@@ -1650,7 +1650,8 @@ def ranking():
                 # S'assurer que la colonne existe et que les valeurs sont numériques
                 if col in filtered_df.columns:
                     filtered_df = filtered_df[pd.to_numeric(filtered_df[col], errors='coerce') > min_value]
-                    st.markdown(f"<small>**Filtre :** <code>{col} &gt; {min_value}</code></small>", unsafe_allow_html=True)
+                    st.markdown(f"<small><strong>Filtre : {col} > {min_value}</strong></small>", unsafe_allow_html=True)
+
             # Liste de colonnes
             df_stat = filtered_df[
                 ['name', 'image_url', 'Age', 'country_of_citizenship', 'current_club_name',
@@ -1918,8 +1919,7 @@ def ranking():
                 # Check that the column exists and that the values are numeric
                 if col in filtered_df.columns:
                     filtered_df = filtered_df[pd.to_numeric(filtered_df[col], errors='coerce') > min_value]
-                    st.markdown(f"<small>**Filtre :** <code>{col} &gt; {min_value}</code></small>", unsafe_allow_html=True)
-
+                    st.markdown(f"<small><strong>Filter : {col} > {min_value}</strong></small>", unsafe_allow_html=True)
 
             # Selecting columns
             df_stat = filtered_df[
