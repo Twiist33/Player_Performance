@@ -32,7 +32,6 @@ with open("CV/CV_ENG_Romain_Traboul.pdf", "rb") as file:
 # Affichage du titre et du logo de l'application web / Display of web application title and logo
 st.set_page_config(page_title="Player Performance 24/25 ⚽ ", page_icon="📊", layout="centered")
 
-
 # Langue dans session_state / Language in session_state
 if "lang" not in st.session_state:
     st.session_state["lang"] = "Français"
@@ -195,7 +194,6 @@ base_stat_translation = {
     "aerial": "Jeu aérien"
 }
 
-
 # Statistiques par catégorie pour le radar / Statistics by categorie for the radar plot
 category_stats = {
     "Gardiens de but": ["GA_per90", "PSxG_per90", "/90", "Save%", "PSxG+/-", "Err_per90","Launch%", "AvgLen", "Cmp%", "AvgDist", "#OPA_per90", "Stp%"],
@@ -212,9 +210,9 @@ def format_stat_name(stat):
         return stat.replace("score_", "").replace("_", " ").capitalize()
     return stat.capitalize() if stat == "rating" else stat
 
-
 # Fonction pour effectuer un radar plot avec les données / Radar plot function with data
 def plot_pizza_radar(labels, player_values, median_values, title="Radar",legend_labels=("Joueur", "Médiane")):
+    # Paramètres de la pizza plot / Parameters of the pizza plot
     pizza = PyPizza(
         params=labels,
         background_color="#EFF0D1",
@@ -226,7 +224,8 @@ def plot_pizza_radar(labels, player_values, median_values, title="Radar",legend_
         other_circle_color="#000000",
         other_circle_lw=0.5
     )
-
+    
+    # Mise des couleurs et valeurs sur la pizza plot / Dislay colors and values on the pizza plot
     fig, ax = pizza.make_pizza(
         values=[round(v) for v in player_values],
         compare_values=[round(v) for v in median_values],
@@ -339,8 +338,6 @@ def find_similar_players(selected_player_name, df, filter_type=None, top_n=5):
     # Colonnes à afficher / Columns to display
     final_cols = [
         'name', 'percentage_similarity', 'Age', 'country_of_citizenship',  'current_club_name', 'market_value_in_eur', 'contract_expiration_date'
-         
-        
     ]
     # Traduction du pays du joueur / Translation of the player's country
     if lang == "Français":
@@ -734,6 +731,7 @@ def player_analysis():
                         unsafe_allow_html=True
                     )
 
+                    # Construction de la pizza plot (joueur-médiane à son poste) pour les statistiques avancées
                     fig_pizza_stat_adv = plot_pizza_radar(
                         labels=stats_cols,
                         player_values=player_norm * 100,
@@ -742,7 +740,6 @@ def player_analysis():
                         legend_labels=(player_data['name'], "Médiane poste")
                     )
 
-                    
                     # Liste des colonnes à afficher selon le poste
                     if poste_cat == "Gardiens de but":
                         pizza_cols = [
@@ -773,7 +770,7 @@ def player_analysis():
                             player_scaled = [v if pd.notna(v) else 0 for v in player_values]
                             median_scaled = [round(v) for v in group_median]
 
-
+                            # Construction de la pizza plot (joueur-médiane) pour les statistiques de base
                             fig_pizza_stat_basis = plot_pizza_radar(
                                 labels=pizza_labels,
                                 player_values=player_scaled,
@@ -782,7 +779,7 @@ def player_analysis():
                                 legend_labels=(player_data['name'], "Médiane poste")
                             )
 
-                            # Affichage dans Streamlit, sans st.markdown de titre global
+                            # Affichage dans Streamlit
                             col1, col2 = st.columns(2)
                             with col1:
                                 st.pyplot(fig_pizza_stat_basis)
@@ -1025,6 +1022,8 @@ def player_analysis():
                         f"<h4 style='text-align: center;'>Performance radar from {player_data['name']} vs {nb_players} players in his category {rating_text}</h4>",
                         unsafe_allow_html=True
                     )
+                    
+                    # Bulding the pizza plot (player-median) for the advanced statistics
                     fig_pizza_stat_adv = plot_pizza_radar(
                         labels=stats_cols,
                         player_values=player_norm * 100,
@@ -1033,7 +1032,6 @@ def player_analysis():
                         legend_labels=(player_data['name'], "Median position")
                     )
 
-                    
                     # List of columns to be displayed by position
                     if poste_cat == "Gardiens de but":
                         pizza_cols = [
@@ -1064,7 +1062,7 @@ def player_analysis():
                             player_scaled = [v if pd.notna(v) else 0 for v in player_values]
                             median_scaled = [round(v) for v in group_median]
 
-
+                            # Bulding the pizza plot (player-median) for the basic statistics
                             fig_pizza_stat_basis = plot_pizza_radar(
                                 labels=pizza_labels,
                                 player_values=player_scaled,
@@ -1112,7 +1110,7 @@ def player_analysis():
                                 legend_labels=(player_data['name'], "Median position")
                             )
 
-                            # Display in Streamlit, without st.markdown global title
+                            # Display in Streamlit
                             col1, col2 = st.columns(2)
                             with col1:
                                 st.pyplot(fig_pizza_stat_basis)
@@ -1331,7 +1329,6 @@ def player_comparison():
                     rating1_text = f"Note : {round(player1_rating)}" if player1_rating is not None else ""
                     rating2_text = f"Note : {round(player2_rating)}" if player2_rating is not None else ""
                     
-                    
                     # Affichage du titre et du radar
                     st.markdown(
                         f"<h4 style='text-align: center;'>Radar comparatif : {player1} ({rating1_text}) vs {player2} ({rating2_text})</h4>",
@@ -1374,7 +1371,7 @@ def player_comparison():
                         player1_scaled = [v if pd.notna(v) else 0 for v in player1_values]
                         player2_scaled = [v if pd.notna(v) else 0 for v in player2_values]
 
-                        # Création du radar comparatif (pizza plot)
+                        # Création du radar comparatif (pizza plot) pour les statistiques de base
                         fig_pizza_stat_basis = plot_pizza_radar(
                             labels=pizza_labels,
                             player_values=player1_scaled,
@@ -1383,8 +1380,7 @@ def player_comparison():
                             legend_labels=(player1, player2)
                         )
 
-
-                    # Affichage dans Streamlit, sans st.markdown de titre global
+                    # Affichage dans Streamlit
                     col1, col2 = st.columns(2)
                     with col1:
                         st.pyplot(fig_pizza_stat_basis)
@@ -1580,10 +1576,9 @@ def player_comparison():
                     player1_rating = player1_data.get("rating", None)
                     player2_rating = player2_data.get("rating", None)
 
-                    # Note calculation if available
+                    # Rating calculation if available
                     rating1_text = f"Rating : {round(player1_rating)}" if player1_rating is not None else ""
                     rating2_text = f"Rating : {round(player2_rating)}" if player2_rating is not None else ""
-                    
                     
                     # Title and radar display
                     st.markdown(
@@ -1627,7 +1622,7 @@ def player_comparison():
                         player1_scaled = [v if pd.notna(v) else 0 for v in player1_values]
                         player2_scaled = [v if pd.notna(v) else 0 for v in player2_values]
 
-                        # Creation of comparative radar (pizza plot)
+                        # Creation of comparative radar (pizza plot) for the basic statistics
                         fig_pizza_stat_basis = plot_pizza_radar(
                             labels=pizza_labels,
                             player_values=player1_scaled,
@@ -1662,11 +1657,9 @@ def ranking_basis():
             else base_stat_translation.get(col.replace("score_", ""), col)
             for col in all_stats_raw
         ]
-
-        # Mapping affiché ↔ original
         stat_name_mapping = dict(zip(translated_stats, all_stats_raw))
         
-        selected_stat_display = st.sidebar.selectbox("Choisissez une statistique :", [""] + translated_stats)
+        selected_stat_display = st.sidebar.selectbox("Choisissez une statistique :", [""] + translated_stats) # Demande à l'utilisateur du choix de statistique
         
         selected_stat = stat_name_mapping.get(selected_stat_display, None)
 
@@ -1680,12 +1673,11 @@ def ranking_basis():
             with st.sidebar:
                 st.markdown("### 🎯 Filtres")
                 
-                # filtre selon la statistique sélectionnée
-                df_with_stat = df.dropna(subset=[selected_stat])
+                df_with_stat = df.dropna(subset=[selected_stat]) # Filtre selon la statistique sélectionnée
 
                 filtered_df = df_with_stat.copy()  # Point de départ pour les filtres
 
-                # filtre Poste
+                # Filtre Poste
                 poste_options_raw = sorted(filtered_df["sub_position"].dropna().unique())
                 poste_options_fr = [""] + [position_translation.get(p, p) for p in poste_options_raw]
                 poste_fr = st.selectbox("Poste", poste_options_fr)
@@ -1694,21 +1686,21 @@ def ranking_basis():
                     poste_en = {v: k for k, v in position_translation.items()}.get(poste_fr, poste_fr)
                     filtered_df = filtered_df[filtered_df["sub_position"] == poste_en]
 
-                # filtre Championnat
+                # Filtre Championnat
                 championnat_options = sorted(filtered_df["current_club_domestic_competition_id"].dropna().unique())
                 championnat = st.selectbox("Championnat", [""] + championnat_options)
 
                 if championnat:
                     filtered_df = filtered_df[filtered_df["current_club_domestic_competition_id"] == championnat]
 
-                # filtre Club
+                # Filtre Club
                 club_options = sorted(filtered_df["current_club_name"].dropna().unique())
                 club = st.selectbox("Club", [""] + club_options)
 
                 if club:
                     filtered_df = filtered_df[filtered_df["current_club_name"] == club]
 
-                # filtre Pays
+                # Filtre Pays
                 pays_options_raw = sorted(filtered_df["country_of_citizenship"].dropna().unique())
                 pays_options_fr = [""] + [country_translation.get(p, p) for p in pays_options_raw]
                 pays_fr = st.selectbox("Pays", pays_options_fr)
@@ -1717,8 +1709,7 @@ def ranking_basis():
                     pays_en = {v: k for k, v in country_translation.items()}.get(pays_fr, pays_fr)
                     filtered_df = filtered_df[filtered_df["country_of_citizenship"] == pays_en]
 
-                # filtre Tranche d’âge
-                # Créer dynamiquement les tranches d'âge disponibles
+                # Filtre Tranche d’âge (création dynamiquement des tranches d'âge disponibles)
                 tranche_options = [""]
 
                 ages = filtered_df["Age"].dropna()
@@ -1730,8 +1721,7 @@ def ranking_basis():
                 if any(ages >= 30):
                     tranche_options.append("30 ans et +")
 
-                # Sélecteur
-                age_group = st.selectbox("Tranche d'âge", tranche_options)
+                age_group = st.selectbox("Tranche d'âge", tranche_options) # Sélecteur de la trancge d'âge
 
                 # Appliquer le filtre si sélectionné
                 if age_group:
@@ -1742,7 +1732,7 @@ def ranking_basis():
                     elif age_group == "30 ans et +":
                         filtered_df = filtered_df[filtered_df["Age"] >= 30]
 
-                # Step 7: Filtre de valeur marchande
+                # Filtre de valeur marchande
                 valeur_min_possible = 0
                 valeur_max_possible = int(filtered_df["market_value_in_eur"].max()) if not filtered_df["market_value_in_eur"].isnull().all() else 10_000_000
 
@@ -1755,7 +1745,7 @@ def ranking_basis():
                     format="%d"
                 )
 
-                st.markdown(f"Valeur maximum sélectionné : **{format_market_value(valeur_max)}**")
+                st.markdown(f"Valeur maximum sélectionné : **{format_market_value(valeur_max)}**") # Affichage du choix de l'utilisateur
                 filtered_df = filtered_df[filtered_df["market_value_in_eur"] <= valeur_max]
 
             # Définir les statistiques spécifiques aux gardiens
@@ -1785,15 +1775,9 @@ def ranking_basis():
             df_stat['country_of_citizenship'] = df_stat['country_of_citizenship'].apply(
                 lambda x: country_translation.get(x, x)
             )
-            # Utilisation du format de market_value
-            df_stat['market_value_in_eur'] = df_stat['market_value_in_eur'].apply(format_market_value)
+            df_stat['market_value_in_eur'] = df_stat['market_value_in_eur'].apply(format_market_value) # Utilisation du format de market_value
             
-            # Ordonner les données du plus grand au plus petit
-            df_stat = df_stat.sort_values(by=selected_stat, ascending=False)
-
-
-
-
+            df_stat = df_stat.sort_values(by=selected_stat, ascending=False) # Ordonner les données du plus grand au plus petit
 
             top3 = df_stat.head(3).reset_index(drop=True) # Affichage du podium
 
@@ -1811,7 +1795,6 @@ def ranking_basis():
                         if pd.notna(top3.loc[i, 'image_url']):
                             st.image(top3.loc[i, 'image_url'], width=150)
                         st.markdown(f"<p style='font-size:16px; '><strong>{selected_stat_display} : </strong> {round(top3.loc[i, selected_stat])}</p>", unsafe_allow_html=True)
-
 
             # Choix des colonnes dans la table
             final_df = df_stat.rename(columns={selected_stat: 'Statistique'})
@@ -1832,21 +1815,16 @@ def ranking_basis():
         if "rating" in df.columns:
             all_stats_raw.append("rating")
 
-        
-        # Apply format to names for display
-        translated_stats = [format_stat_name(col) for col in all_stats_raw]
+        translated_stats = [format_stat_name(col) for col in all_stats_raw] # Apply format to names for display
 
-        # Create display mapping → real name
-        stat_name_mapping = dict(zip(translated_stats, all_stats_raw))
+        stat_name_mapping = dict(zip(translated_stats, all_stats_raw)) # Create display mapping → real name
 
-        # Selector in the sidebar
-        selected_stat_display = st.sidebar.selectbox("Select a statistic :", [""] + translated_stats)
+        selected_stat_display = st.sidebar.selectbox("Select a statistic :", [""] + translated_stats) # Selector in the sidebar
 
-        # Récupérer le nom réel de la colonne
-        selected_stat = stat_name_mapping.get(selected_stat_display, None)
+        selected_stat = stat_name_mapping.get(selected_stat_display, None) # Recover the real name of the column
 
         if not selected_stat:
-            # Si la métrique est selectionné, nous cachons l'image
+            # If the metric is selected, we hide the image
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
                 
@@ -1856,43 +1834,40 @@ def ranking_basis():
             with st.sidebar:
                 st.markdown("### 🎯 Filters")
 
-                # Step 1: filter by selected statistic
-                df_with_stat = df.dropna(subset=[selected_stat])
+                df_with_stat = df.dropna(subset=[selected_stat]) # Filter by selected statistic
 
                 filtered_df = df_with_stat.copy()  # Starting point for filters
 
-                # Step 2: Position filter
+                # Position filter
                 poste_options_raw = sorted(filtered_df["sub_position"].dropna().unique())
                 poste_options = st.selectbox("Position", [""] + poste_options_raw )
 
                 if poste_options:
                     filtered_df = filtered_df[filtered_df["sub_position"] == poste_options]
 
-                # Step 3: League filter
+                # League filter
                 championnat_options = sorted(filtered_df["current_club_domestic_competition_id"].dropna().unique())
                 championnat = st.selectbox("League", [""] + championnat_options)
 
                 if championnat:
                     filtered_df = filtered_df[filtered_df["current_club_domestic_competition_id"] == championnat]
 
-                # Step 4: Club filter
+                # Club filter
                 club_options = sorted(filtered_df["current_club_name"].dropna().unique())
                 club = st.selectbox("Club", [""] + club_options)
 
                 if club:
                     filtered_df = filtered_df[filtered_df["current_club_name"] == club]
 
-                # Step 5: Country filter
+                # Country filter
                 pays_options_raw = sorted(filtered_df["country_of_citizenship"].dropna().unique())
                 pays_options = st.selectbox("Country", [""] + pays_options_raw )
 
                 if pays_options:
                     filtered_df = filtered_df[filtered_df["country_of_citizenship"] == pays_options]
 
-                # Step 6: Age group filter
-                # Dynamically create the age ranges available
+                # Age group filter (dynamically create the age ranges available)
                 tranche_options = [""]
-
                 ages = filtered_df["Age"].dropna()
 
                 if any(ages < 23):
@@ -1913,7 +1888,7 @@ def ranking_basis():
                     elif age_group == "30 yrs abd +":
                         filtered_df = filtered_df[filtered_df["Age"] >= 30]
 
-                # Step 7: Market value filter
+                # Market value filter
                 valeur_min_possible = 0
                 valeur_max_possible = int(filtered_df["market_value_in_eur"].max()) if not filtered_df["market_value_in_eur"].isnull().all() else 10_000_000
 
@@ -1926,7 +1901,7 @@ def ranking_basis():
                     format="%d"
                 )
 
-                st.markdown(f"Maximum value selected: **{format_market_value(valeur_max)}**")
+                st.markdown(f"Maximum value selected: **{format_market_value(valeur_max)}**") # Display the choice of the user
                 filtered_df = filtered_df[filtered_df["market_value_in_eur"] <= valeur_max]
         
 
@@ -1935,7 +1910,6 @@ def ranking_basis():
                 "goal_scoring_conceded", "efficiency", "error_fouls",
                 "short_clearance", "long_clearance", "positioning", "aerial_defense"
             ]
-
             # Selecting columns
             df_stat = filtered_df[
                 ['name', 'image_url', 'Age', 'country_of_citizenship', 'current_club_name','sub_position',
@@ -1948,11 +1922,9 @@ def ranking_basis():
             else:
                 df_stat = df_stat[df_stat['sub_position'] != 'Goalkeeper']
 
-
             df_stat['market_value_in_eur'] = df_stat['market_value_in_eur'].apply(format_market_value) # Format market value
                 
-            # Order data from largest to smallest
-            df_stat = df_stat.sort_values(by=selected_stat, ascending=False)
+            df_stat = df_stat.sort_values(by=selected_stat, ascending=False) # Order data from largest to smallest
 
             top3 = df_stat.head(3).reset_index(drop=True) # Displaying podium
 
@@ -1971,7 +1943,6 @@ def ranking_basis():
                             st.image(top3.loc[i, 'image_url'], width=150)
                         stat_label = format_stat_name(selected_stat)
                         st.markdown(f"<p style='font-size:16px;'><strong>{stat_label}:</strong> {round(top3.loc[i, selected_stat])}</p>", unsafe_allow_html=True)
-
 
             # We display the table with the columns desired
             final_df = df_stat.rename(columns={selected_stat: 'Statistic'})
@@ -2003,12 +1974,11 @@ def ranking():
             with st.sidebar:
                 st.markdown("### 🎯 Filtres")
 
-                # Étape 1 : filtre selon la statistique sélectionnée
-                df_with_stat = df.dropna(subset=[selected_stat])
+                df_with_stat = df.dropna(subset=[selected_stat]) # Filtre selon la statistique sélectionnée
 
                 filtered_df = df_with_stat.copy()  # Point de départ pour les filtres
 
-                # Étape 2 : filtre Poste
+                # Filtre Poste
                 poste_options_raw = sorted(filtered_df["sub_position"].dropna().unique())
                 poste_options_fr = [""] + [position_translation.get(p, p) for p in poste_options_raw]
                 poste_fr = st.selectbox("Poste", poste_options_fr)
@@ -2017,21 +1987,21 @@ def ranking():
                     poste_en = {v: k for k, v in position_translation.items()}.get(poste_fr, poste_fr)
                     filtered_df = filtered_df[filtered_df["sub_position"] == poste_en]
 
-                # Étape 3 : filtre Championnat
+                # Filtre Championnat
                 championnat_options = sorted(filtered_df["current_club_domestic_competition_id"].dropna().unique())
                 championnat = st.selectbox("Championnat", [""] + championnat_options)
 
                 if championnat:
                     filtered_df = filtered_df[filtered_df["current_club_domestic_competition_id"] == championnat]
 
-                # Étape 4 : filtre Club
+                # Filtre Club
                 club_options = sorted(filtered_df["current_club_name"].dropna().unique())
                 club = st.selectbox("Club", [""] + club_options)
 
                 if club:
                     filtered_df = filtered_df[filtered_df["current_club_name"] == club]
 
-                # Étape 5 : filtre Pays
+                # Filtre Pays
                 pays_options_raw = sorted(filtered_df["country_of_citizenship"].dropna().unique())
                 pays_options_fr = [""] + [country_translation.get(p, p) for p in pays_options_raw]
                 pays_fr = st.selectbox("Pays", pays_options_fr)
@@ -2040,10 +2010,8 @@ def ranking():
                     pays_en = {v: k for k, v in country_translation.items()}.get(pays_fr, pays_fr)
                     filtered_df = filtered_df[filtered_df["country_of_citizenship"] == pays_en]
 
-                # Étape 6 : filtre Tranche d’âge
-                # Créer dynamiquement les tranches d'âge disponibles
+                # Filtre Tranche d’âge (créer dynamiquement les tranches d'âge disponibles)
                 tranche_options = [""]
-
                 ages = filtered_df["Age"].dropna()
 
                 if any(ages < 23):
@@ -2053,8 +2021,7 @@ def ranking():
                 if any(ages >= 30):
                     tranche_options.append("30 ans et +")
 
-                # Sélecteur
-                age_group = st.selectbox("Tranche d'âge", tranche_options)
+                age_group = st.selectbox("Tranche d'âge", tranche_options) # Sélecteur
 
                 # Appliquer le filtre si sélectionné
                 if age_group:
@@ -2065,7 +2032,7 @@ def ranking():
                     elif age_group == "30 ans et +":
                         filtered_df = filtered_df[filtered_df["Age"] >= 30]
 
-                # Step 7: Filtre de valeur marchande
+                # Filtre de valeur marchande
                 valeur_min_possible = 0
                 valeur_max_possible = int(filtered_df["market_value_in_eur"].max()) if not filtered_df["market_value_in_eur"].isnull().all() else 10_000_000
 
@@ -2078,9 +2045,8 @@ def ranking():
                     format="%d"
                 )
 
-                st.markdown(f"Valeur maximum sélectionné : **{format_market_value(valeur_max)}**")
+                st.markdown(f"Valeur maximum sélectionné : **{format_market_value(valeur_max)}**") # Affichage du choix de l'utilisateur
                 filtered_df = filtered_df[filtered_df["market_value_in_eur"] <= valeur_max]
-
 
             # Placement du glossaire en sidebar
             with st.sidebar.expander("Glossaire des statistiques"):
@@ -2197,8 +2163,7 @@ def ranking():
             df_stat['country_of_citizenship'] = df_stat['country_of_citizenship'].apply(
                 lambda x: country_translation.get(x, x)
             )
-            # Utilisation du format de market_value
-            df_stat['market_value_in_eur'] = df_stat['market_value_in_eur'].apply(format_market_value)
+            df_stat['market_value_in_eur'] = df_stat['market_value_in_eur'].apply(format_market_value) # Utilisation du format de market_value
 
             # Filtrage spécial si la statistique sélectionnée est reservée aux gardiens
             if selected_stat in ['Saves_per90', 'Save%', '/90', 'PSxG+/-','AvgLen', 'Launch%', 'Stp%', '#OPA_per90', 'CS%']:
@@ -2243,10 +2208,8 @@ def ranking():
 
             st.dataframe(final_df, use_container_width=True)
 
-
     else:
-        # Display the title
-        st.markdown("<h4 style='text-align: center;'>🏆 Player ranking for advanced statistics</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='text-align: center;'>🏆 Player ranking for advanced statistics</h4>", unsafe_allow_html=True) # Display the title
         
         image_path = os.path.join(os.path.dirname(__file__), "image", "player_ranking.jpg") # Bulding the path for the image
 
@@ -2266,43 +2229,40 @@ def ranking():
             with st.sidebar:
                 st.markdown("### 🎯 Filters")
 
-                # Step 1: filter by selected statistic
-                df_with_stat = df.dropna(subset=[selected_stat])
+                df_with_stat = df.dropna(subset=[selected_stat]) # Filter by selected statistic
 
                 filtered_df = df_with_stat.copy()  # Starting point for filters
 
-                # Step 2: Position filter
+                # Position filter
                 poste_options_raw = sorted(filtered_df["sub_position"].dropna().unique())
                 poste_options = st.selectbox("Position", [""] + poste_options_raw )
 
                 if poste_options:
                     filtered_df = filtered_df[filtered_df["sub_position"] == poste_options]
 
-                # Step 3: League filter
+                # League filter
                 championnat_options = sorted(filtered_df["current_club_domestic_competition_id"].dropna().unique())
                 championnat = st.selectbox("League", [""] + championnat_options)
 
                 if championnat:
                     filtered_df = filtered_df[filtered_df["current_club_domestic_competition_id"] == championnat]
 
-                # Step 4: Club filter
+                # Club filter
                 club_options = sorted(filtered_df["current_club_name"].dropna().unique())
                 club = st.selectbox("Club", [""] + club_options)
 
                 if club:
                     filtered_df = filtered_df[filtered_df["current_club_name"] == club]
 
-                # Step 5: Country filter
+                # Country filter
                 pays_options_raw = sorted(filtered_df["country_of_citizenship"].dropna().unique())
                 pays_options = st.selectbox("Country", [""] + pays_options_raw )
 
                 if pays_options:
                     filtered_df = filtered_df[filtered_df["country_of_citizenship"] == pays_options]
 
-                # Step 6: Age group filter
-                # Dynamically create the age ranges available
+                # Age group filter (dynamically create the age ranges available)
                 tranche_options = [""]
-
                 ages = filtered_df["Age"].dropna()
 
                 if any(ages < 23):
@@ -2323,7 +2283,7 @@ def ranking():
                     elif age_group == "30 yrs abd +":
                         filtered_df = filtered_df[filtered_df["Age"] >= 30]
 
-                # Step 7: Market value filter
+                # Market value filter
                 valeur_min_possible = 0
                 valeur_max_possible = int(filtered_df["market_value_in_eur"].max()) if not filtered_df["market_value_in_eur"].isnull().all() else 10_000_000
 
@@ -2336,9 +2296,8 @@ def ranking():
                     format="%d"
                 )
 
-                st.markdown(f"Maximum value selected: **{format_market_value(valeur_max)}**")
+                st.markdown(f"Maximum value selected: **{format_market_value(valeur_max)}**") # Display the choice of the user
                 filtered_df = filtered_df[filtered_df["market_value_in_eur"] <= valeur_max]
-
 
             # Statistics glossary in the sidebar
             with st.sidebar.expander("Statistics glossary"):
@@ -2500,7 +2459,7 @@ def scout():
         st.markdown("<h4 style='text-align: center;'> 🔎 Scouting </h4>", unsafe_allow_html=True) # Affichage du titre de la page
         df = pd.read_csv("data/database_player.csv") # Récupération des données
         
-        # Caractéristiques générales
+        # Caractéristiques générales (avec traductions lorsque cela est nécéssaire)
         pays_options_raw = sorted(df["country_of_citizenship"].dropna().unique())
         pays_options_fr = [country_translation.get(p, p) for p in pays_options_raw]
         pays_fr = st.multiselect("Pays", pays_options_fr, placeholder="")
@@ -2554,7 +2513,6 @@ def scout():
                 step=1
             )
 
-
         # Statistiques avancées (à partir de la 30e colonne)
         selected_adv_stats, adv_stat_limits = [], {}
         adv_columns = df.columns[30:]
@@ -2564,18 +2522,20 @@ def scout():
                 min_val, max_val = float(df[stat].min()), float(df[stat].max())
                 adv_stat_limits[stat] = st.slider(f"{stat} (min / max)", min_val, max_val, (min_val, max_val))
 
-        nb_players = st.slider("Nombre de joueurs à afficher", 3, 30, 10)
-        recherche = st.columns(3)[1].button("🔍 Rechercher")
+        nb_players = st.slider("Nombre de joueurs à afficher", 3, 30, 10) # Choix de nombre de joueurs à afficher
+        recherche = st.columns(3)[1].button("🔍 Rechercher") # Mise en place du bouton Rechercher
 
+        # On s'assure qu'un minimum d'informations a été renseigné
         nb_filled = sum([
             bool(pays_fr), bool(poste_fr), bool(contract_year), bool(championnat),
             bool(club), len(selected_base_stats) > 0, len(selected_adv_stats) > 0
         ])
 
         if recherche:
-            if nb_filled < 3:
-                st.error("Veuillez remplir au moins 3 critères pour lancer la recherche.")
+            if nb_filled < 2:
+                st.error("Veuillez remplir au moins 2 critères pour lancer la recherche.")
             else:
+                # On récupère les données associées
                 df_filtered = df.copy()
                 if pays_en: df_filtered = df_filtered[df_filtered["country_of_citizenship"].isin(pays_en)]
                 if poste_en: df_filtered = df_filtered[df_filtered["sub_position"].isin(poste_en)]
@@ -2616,7 +2576,6 @@ def scout():
                 if any(stat in ['Won%', 'Tkl%', 'Succ%'] for stat in selected_adv_stats):
                     df_filtered = df_filtered[df_filtered["sub_position"] != "Goalkeeper"]
 
-
                 all_stats = selected_base_stats + selected_adv_stats
                 display_columns = ["name", "image_url", "Age", "country_of_citizenship", "current_club_name",
                                    "sub_position", "market_value_in_eur", "contract_expiration_date", "rating"] + all_stats
@@ -2636,11 +2595,12 @@ def scout():
                     df_stat = df_stat[df_stat["sub_position"] != "Goalkeeper"]
                 df_stat = df_stat[display_columns].head(nb_players).reset_index(drop=True)
 
-                # Traductions
+                # Traductions de plusieurs catégories (postion, pays) et mise sous format des valeurs sur le marché des transferts
                 df_stat["sub_position"] = df_stat["sub_position"].apply(lambda x: position_translation.get(x, x))
                 df_stat["country_of_citizenship"] = df_stat["country_of_citizenship"].apply(lambda x: country_translation.get(x, x))
                 df_stat["market_value_in_eur"] = df_stat["market_value_in_eur"].apply(format_market_value)
 
+                # Construction du podium
                 top3 = df_stat.head(3)
                 col1, col2, col3 = st.columns([1, 1, 1])
                 podium_order = [1, 0, 2]
@@ -2655,8 +2615,7 @@ def scout():
                                 st.image(top3.loc[i, 'image_url'], width=150)
                             st.markdown(f"**Note :** {round(top3.loc[i, 'rating'], 2)}")
 
-                # Supprimer image_url pour la table finale
-                final_df = df_stat.drop(columns=["image_url"])
+                final_df = df_stat.drop(columns=["image_url"]) # Suppression de image_url pour la table finale
                 st.dataframe(final_df, use_container_width=True)
 
         # Sidebar résumé
@@ -2689,7 +2648,83 @@ def scout():
                     if stat in adv_stat_limits:
                         st.markdown(f"- {stat} : {adv_stat_limits[stat]}")
 
+        # Placement du glossaire en sidebar
+        with st.sidebar.expander("Glossaire des statistiques avancées"):
+            st.markdown("""
+            ### Statistiques générales
+            - **MP** : Nombre de matches joués
+            - **Starts** : Nombre de matches débutés en tant que titulaire
+            - **Min** : Nombre de minutes joués
+            - **90s** : Nombre de minutes joués divisé par 90
 
+            ### Gardien de but :
+            - **GA_per90** : Buts encaissés par 90 minutes
+            - **SoTA_per90** : Nombre de tirs cadrés concédés par 90 minutes 
+            - **Save_per90** : Nombre d’arrêts effectués par 90 minutes
+            - **PSxG_per90** : Post-Shot Expected Goals par 90 minutes
+            - **PSxG+/-** : Différence entre les PSxG (xG post-tir) et buts encaissés
+            - **/90 /PSxG-GA/90** : Différence entre PSxG et buts encaissés par 90 minutes
+            - **PKm_per90** : Nombre de pénaltys non arrêtés par le gardien par 90 minutes
+            - **PKsv_per90** : Nombre de pénaltys arrêtés par le gardien par 90 minutes
+            - **Thr_per90** : Nombre de dégagements effectués par le gardien par 90 minutes
+            - **Stp_per90** : Nombre de centres arrêtés dans la surface par 90 minutes
+            - **Save%** : Pourcentage d’arrêts effectués  
+            - **CS%** : Pourcentage de clean sheat (matchs sans encaisser de but)
+            - **AvgLen** : Longueur moyenne des passes (en yards)  
+            - **Launch%** : Pourcentage de passes longues  
+            - **Stp%** : Pourcentage de centres arrêtés dans la surface  
+            - **#OPA_per90** : Actions défensives hors de la surface par 90 minutes  
+
+            ### Joueurs de champs :
+            - **Gls_per90** : Buts par 90 minutes
+            - **Ast_per90** : Passe décisves par 90 minutes
+            - **G+A_per90** : Buts + Passe décisives par 90 minutes  
+            - **G-PK** : Buts marquées - pénaltys inscrits
+            - **G-PK_per90** : Buts marquées - pénaltys inscrits par 90 minutes
+            - **G-xG_per90** : Buts marquées - Expected Goals par 90 minutes
+            - **PK_per90** : Penaltys par 90 minutes
+            - **npxG** : Non-penalty Expected Goals
+            - **npxG_per90** : Non-penalty Expected Goals par 90 minutes
+            - **xAG_per90** : Expected Assisted Goals par 90 minutes
+            - **PrgC_per90** : Conduites progressives par 90 minutes
+            - **A-xAG** : Nombre de passe décisives - Expected Assisted Goals
+            - **Sh_per90** : Tirs tentés par 90 minutes
+            - **SoT_per90** : Tir cadrés par 90 minutes
+            - **G/Sh** : Buts par tir
+            - **SoT%** : Pourcentage de Tirs cadrés
+            - **PrgP_per90** : Passes progressives par 90 minutes
+            - **PrgR_per90** : Passes progressives reçues par 90 minutes
+            - **Cmp** : Nombre de passes réussis
+            - **Cmp_per90** : Nombre de passes réussis par 90 minutes
+            - **Cmp%** : Pourcentage de passes réussies
+            - **AvgDist**: Distance moyenne des passes (en yards)  
+            - **1/3_per90** : Nombre de passes réussis dans le derniers tiers offensifs par 90 minutes
+            - **PPA_per90** : Nombre de passes réussis dans la surface de réparation adverse par 90 minutes
+            - **CrsPA_per90** : Nombre de centres réussis dans la surface de réparation adverse par 90 minutes
+            - **Sw_per90** : Nombre de passes longues réussis par 90 minutes
+            - **Crs_per90** : Nombre de centres réussis par 90 minutes
+            - **Tkl** : Nombre de tacles effectués
+            - **Tkl_per90** : Nombre de tacles effectués par 90 minutes
+            - **Int_per90** : Nombre d'interceptions effectués par 90 minutes
+            - **Clr_per90** : Nombre de dégagements effectués par 90 minutes
+            - **Err_per90** : Erreurs menant à un tir adverse par 90 minutes
+            - **Fld_per90** : Fautes subies par 90 minutes
+            - **Touches_per90** : Nombre de touches du ballon par 90 minutes
+            - **Succ_per90** : Dribbles réussis par 90 minutes
+            - **Carries_per90** : Nombre de portage du ballon par 90 minutes
+            - **Mis_per90** : Nombre de mauvais contrôle du ballon par 90 minutes
+            - **Dis_per90** : Ballons perdus par 90 minutes
+            - **Fls_per90** : Nombre de fautes provoquées par 90 minutes
+            - **PKwon_per90** : Nombre de penaltys obtenus par 90 minutes
+            - **PKcon_per90** : Nombre de penaltys concédés par 90 minutes
+            - **Recov_per90** : Nombre de récupération du ballon par 90 minutes
+            - **Tkl%** : Pourcentage de tacles effectués
+            - **Succ%** : Pourcentage de dribbles réussis
+            - **Won_per90** : Duels aériens gagnés par 90 minutes
+            - **Won%** : Pourcentage de duels aériens gagnés
+            - **CrdY_per90** : Cartons jaunes par 90 minutes
+            - **CrdR_per90** : Cartons rouges par 90 minutes
+            """)
 
     else :
         st.markdown("<h4 style='text-align: center;'> 🔎 Scouting </h4>", unsafe_allow_html=True) # Display the title
@@ -2744,18 +2779,20 @@ def scout():
                 min_val, max_val = float(df[stat].min()), float(df[stat].max())
                 adv_stat_limits[stat] = st.slider(f"{stat} (min / max)", min_val, max_val, (min_val, max_val))
 
-        nb_players = st.slider("Number of players to display", 3, 30, 10)
-        search = st.columns(3)[1].button("🔍 Search")
+        nb_players = st.slider("Number of players to display", 3, 30, 10) # Choice of the number of players to display
+        search = st.columns(3)[1].button("🔍 Search") # Creation of the button Search
 
+        # We want that 2 criterias to start the search
         nb_filled = sum([
             bool(country), bool(position), bool(contract_year), bool(leagues),
             bool(club), len(selected_base_stats) > 0, len(selected_adv_stats) > 0
         ])
 
         if search:
-            if nb_filled < 3:
-                st.error("Please fill at least 3 criteria to start the search.")
+            if nb_filled < 2:
+                st.error("Please fill at least 2 criterias to start the search.")
             else:
+                # We recovering the data
                 df_filtered = df.copy()
                 if country: df_filtered = df_filtered[df_filtered["country_of_citizenship"].isin(country)]
                 if position: df_filtered = df_filtered[df_filtered["sub_position"].isin(position)]
@@ -2772,6 +2809,7 @@ def scout():
                     if stat in df_filtered.columns:
                         df_filtered = df_filtered[df_filtered[stat].between(min_v, max_v)]
 
+                # Thresholds made to not over-reward a player which have a low number realised on a statistic but a high percentage
                 thresholds = {
                     'Cmp%': ('Cmp', 250),
                     'Tkl%': ('Tkl', 40),
@@ -2785,6 +2823,7 @@ def scout():
                         if col in df_filtered.columns:
                             df_filtered = df_filtered[df_filtered[col] >= min_val]
 
+                # Some specifics parameters for the goalkeepers
                 goalkeeper_advanced_stats = ['Saves_per90', 'Save%', '/90', 'PSxG+/-', 'AvgLen', 'Launch%', 'Stp%', '#OPA_per90', 'CS%', 'GA_per90']
                 if any(stat in selected_adv_stats for stat in goalkeeper_advanced_stats):
                     df_filtered = df_filtered[df_filtered["sub_position"] == "Goalkeeper"]
@@ -2796,6 +2835,7 @@ def scout():
                     "short_clearance", "long_clearance", "positioning", "aerial_defense"
                 ]
                 selected_goalkeeper_stats = [stat for stat in selected_base_stats if stat in [f"score_{s}" for s in goalkeeper_stats]]
+                
                 if selected_goalkeeper_stats:
                     df_filtered = df_filtered[df_filtered["sub_position"] == "Goalkeeper"]
                 elif selected_base_stats:
@@ -2803,13 +2843,14 @@ def scout():
 
                 all_stats = selected_base_stats + selected_adv_stats
                 display_columns = ["name", "image_url", "Age", "country_of_citizenship", "current_club_name",
-                                   "sub_position", "market_value_in_eur", "contract_expiration_date", "rating"] + all_stats
+                                   "sub_position", "market_value_in_eur", "contract_expiration_date", "rating"] + all_stats # We choose the list of informations collected
 
                 df_stat = df_filtered.dropna(subset=["rating"]).sort_values("rating", ascending=False)
                 df_stat = df_stat[display_columns].head(nb_players).reset_index(drop=True)
 
-                df_stat["market_value_in_eur"] = df_stat["market_value_in_eur"].apply(format_market_value)
+                df_stat["market_value_in_eur"] = df_stat["market_value_in_eur"].apply(format_market_value) # Format market value
 
+                # We display a podium
                 top3 = df_stat.head(3)
                 col1, col2, col3 = st.columns([1, 1, 1])
                 podium_order = [1, 0, 2]
@@ -2856,6 +2897,84 @@ def scout():
                 for stat in selected_adv_stats:
                     if stat in adv_stat_limits:
                         st.markdown(f"- {stat}: {adv_stat_limits[stat]}")
+
+        # Gloassary in the sidebar
+        with st.sidebar.expander("Glossary of advanced statistics"):
+            st.markdown("""
+            ### General statistics
+            - **MP** : Number of matches played
+            - **Starts** : Number of matches played at starter
+            - **Min** : Number of minutes played
+            - **90s** : Number of minutes played divided by 90
+
+            ### Goalkeeper :
+            - **GA_per90** : Goals conceded per 90 minutes  
+            - **SoTA_per90** : Number of shot on target conceded per 90 minutes 
+            - **Save_per90** : Number of saves made per 90 minutes
+            - **PSxG_per90**: Post-Shot Expected Goals per 90 minutes  
+            - **PSxG+/-** : Difference between PSxG and goals conceded 
+            - **/90 (PSxG-GA/90)**: Difference between PSxG and goals conceded per 90 minutes             
+            - **PKm_per90** : Number of penaltys non-save by the keeper per 90 minutes
+            - **PKsv_per90** : Number of penaltys save by the keeper per 90 minutes
+            - **Thr_per90** : Number of throws made by the keeper per 90 minutes
+            - **Stp_per90** : Number of cross stopped into penalty area by the keeper
+            - **Save%** : Save percentage  
+            - **CS%** : Percentage og clean sheat (matches without conceded a goal)
+            - **AvgLen** :  Average pass length (in yards)   
+            - **Launch%** : Percentage of long passes
+            - **Stp%** : Percentage of crosses stopped inside the box  
+            - **#OPA_per90** : Defensive actions outside the penalty area per 90 minutes
+
+            ### Field player :
+            - **Gls_per90** : Goals per 90 minutes
+            - **Ast_per90** : Assists per 90 minutes
+            - **G+A_per90** : Goals + Assists per 90 minutes  
+            - **G-PK** : Goals - penaltys scored
+            - **G-PK_per90** : Goals scored minus penalties per 90 minutes
+            - **G-xG_per90** : Buts minus Expected Goals per 90 minutes
+            - **PK_per90** : Penaltys per 90 minutes
+            - **npxG** : Non-penalty Expected Goals
+            - **npxG_per90** : Non-penalty Expected Goals per 90 minutes 
+            - **xAG_per90** : Expected Assisted Goals per 90 minutes  
+            - **PrgC_per90** : Progressive carries per 90 minutes 
+            - **A-xAG** : Number of assists - Expected Assisted Goals
+            - **Sh_per90** : Shots attempted per 90 minutes
+            - **SoT_per90** : Shot on target per 90 minutes
+            - **G/Sh** : Goals per shot  
+            - **SoT%** : Percentage of Shot on target
+            - **PrgP_per90** : Progressive passes per 90 minutes 
+            - **PrgR_per90** : Progressive passes received per 90 minutes 
+            - **Cmp** : Number of passes achieved
+            - **Cmp_per90** : Number of passes achieved par 90 minutes
+            - **Cmp%** : Pass completion percentage
+            - **AvgDist**: Average pass distance (in yards)  
+            - **1/3_per90** : Number of passes achieved into last third area per 90 minutes
+            - **PPA_per90** : Number of passes achieved into penalty area par 90 minutes
+            - **CrsPA_per90** : Number of crosses achieved into penalty area par 90 minutes
+            - **Sw_per90** : Number of long passes completed per 90 minutes
+            - **Crs_per90** : Number of crosses completed per 90 minutes
+            - **Tkl** : Number of tackes made
+            - **Tkl_per90** : Tackles per 90 minutes 
+            - **Int_per90** : Interceptions per 90 minutes 
+            - **Clr_per90** : Number of clearances made per 90 minutes
+            - **Err_per90** : Errors leading to a shot per 90 minutes  
+            - **Fld_per90** : Fouls drawn per 90 minutes 
+            - **Touches_per90** : Number of touches of the ball per 90 minutes
+            - **Succ_per90** : Successful dribbles per 90 minutes  
+            - **Carries_per90** : Number of carries per 90 minutes
+            - **Mis_per90** : Number of times a player failed when attempting to gain control of a ball
+            - **Dis_per90** : Dispossessions per 90 minutes
+            - **Fls_per90** : Number of faults provoked per 90 minutes
+            - **PKwon_per90** : Number of penaltys obtained per 90 minutes
+            - **PKcon_per90** : Number of penaltys conceded par 90 minutes
+            - **Recov_per90** : Number of recovery made per 90 minutes
+            - **Tkl%** : Tackle success rate 
+            - **Succ%** : Dribble success rate  
+            - **Won_per90** : Aerial duels won per 90 minutes  
+            - **Won%** : Aerial duel success rate 
+            - **CrdY_per90** : Yellow cards per 90 minutes  
+            - **CrdR_per90** : Red cards per 90 minutes  
+            """)
 
 # Appel de la fonction associé à la demande de l'utilisateur / Call of the function associated with the user request / 
 if menu in ["Menu", "Home"]:
