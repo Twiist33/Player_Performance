@@ -18,6 +18,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 from mplsoccer import PyPizza, FontManager
 from matplotlib.patches import Patch
+import base64
 
 # Charger les  fichiers PDF présent à la fin de la page d'acceuil / Load PDF files at the end of the home page
 with open("documentation/Documentation_Player_Performance_France.pdf", "rb") as file:
@@ -403,29 +404,36 @@ def home():
             unsafe_allow_html=True
         )
 
-        col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) # Utilisation de st.columns pour afficher les 2 boutons côte à côte et centrés
+        # Encodage base64 des fichiers PDF
+        doc_base64 = base64.b64encode(doc).decode()
+        cv_base64 = base64.b64encode(cv_data_fr).decode()
 
-        # Utilisation du 1er bouton pour télécharger la documentation du projet
-        with col2:
-            st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-            st.download_button(
-                label="Documentation",
-                data=doc,
-                file_name="Documentation_Player_Performance_France.pdf",
-                mime="application/pdf"
-            )
-            st.markdown("</div>", unsafe_allow_html=True)
+        # HTML pour les boutons centrés, responsive
+        st.markdown(
+            f"""
+            <div style='
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 2rem;
+                margin-bottom: 1.5rem;
+            '>
+                <div style="text-align: center;">
+                    <a href="data:application/pdf;base64,{doc_base64}" download="Documentation_Player_Performance_France.pdf">
+                        <button style="padding: 0.5rem 1.2rem; font-size: 1rem;">Documentation</button>
+                    </a>
+                </div>
+                <div style="text-align: center;">
+                    <a href="data:application/pdf;base64,{cv_base64}" download="CV_FR_Romain_Traboul.pdf">
+                        <button style="padding: 0.5rem 1.2rem; font-size: 1rem;">Mon CV en français</button>
+                    </a>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-        # Utilisation du 2ème bouton pour télécharger le CV en français
-        with col3:
-            st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-            st.download_button(
-                label="Mon CV en français",
-                data=cv_data_fr,
-                file_name="CV_FR_Romain_Traboul.pdf",
-                mime="application/pdf"
-            )
-            st.markdown("</div>", unsafe_allow_html=True)
+
 
 
     else:
@@ -478,29 +486,35 @@ def home():
             """, unsafe_allow_html=True
         )
 
-        col1, col2, col3, col4= st.columns([1, 1, 1, 1]) # Use st.columns to display the 2 buttons side by side and centered
+        # Encodage base64 des fichiers PDF
+        doc_base64 = base64.b64encode(doc_eng).decode()
+        cv_base64 = base64.b64encode(cv_data_eng).decode()
 
-        # Use 1st button to download documentation
-        with col2:
-            st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-            st.download_button(
-                label="Documentation",
-                data=doc_eng,
-                file_name="Documentation_Player_Performance_English.pdf",
-                mime="application/pdf"
-            )
-            st.markdown("</div>", unsafe_allow_html=True)
+        # HTML pour les boutons centrés, responsive
+        st.markdown(
+            f"""
+            <div style='
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 2rem;
+                margin-bottom: 1.5rem;
+            '>
+                <div style="text-align: center;">
+                    <a href="data:application/pdf;base64,{doc_base64}" download="Documentation_Player_Performance_France.pdf">
+                        <button style="padding: 0.5rem 1.2rem; font-size: 1rem;">Documentation</button>
+                    </a>
+                </div>
+                <div style="text-align: center;">
+                    <a href="data:application/pdf;base64,{cv_base64}" download="CV_ENG_Romain_Traboul.pdf">
+                        <button style="padding: 0.5rem 1.2rem; font-size: 1rem;">My CV in english</button>
+                    </a>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-        # Use the 2nd button to download the English CV
-        with col3:
-            st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-            st.download_button(
-                label="My CV in english",
-                data=cv_data_eng,
-                file_name="CV_ENG_Romain_Traboul.pdf",
-                mime="application/pdf"
-            )
-            st.markdown("</div>", unsafe_allow_html=True)
 
 # Page de l'analyse d'un joueur / Player analysis page
 def player_analysis():
@@ -2909,6 +2923,8 @@ def scout():
 
         nb_players = st.slider("Number of players to display", 3, 30, 10) # Choice of the number of players to display
         search = st.columns(3)[1].button("🔍 Search") # Creation of the button Search
+
+
 
         # We want that 2 criterias to start the search
         nb_filled = sum([
