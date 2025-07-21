@@ -526,34 +526,38 @@ def player_analysis():
         else:
             player_data = df[df['name'] == selected_player].iloc[0] # Filtrer le DataFrame pour le joueur sélectionné
 
+            # Récupération des traductions
+            pays = country_translation.get(player_data['country_of_citizenship'], player_data['country_of_citizenship'])
+            poste = position_translation.get(player_data['sub_position'], player_data['sub_position'])
+
             # Profil du joueur (image à gauche, infos à droite)
-            st.markdown(
-                f"<h4 style='text-align: center;'>Profil du joueur</h4>",
-                unsafe_allow_html=True
-            )
-            col1, col2, col3 = st.columns([1, 2, 2])
+            st.markdown("<h4 style='text-align: center;'>Profil du joueur</h4>", unsafe_allow_html=True)
 
-            with col1:
-                if pd.notna(player_data['image_url']):
-                    st.image(player_data['image_url'], width=200)
+            st.markdown(f"""
+            <div style="display: flex; flex-direction: row; justify-content: space-between; gap: 2rem; flex-wrap: nowrap; align-items: center; overflow-x: auto;">
 
-            with col2:
-                st.markdown(f"**Nom :** {player_data['name']}")
-                st.markdown(f"**Âge :** {int(player_data['Age'])}" if pd.notna(player_data['Age']) else "**Âge :** -")
-                # Traduction du pays en français
-                pays = country_translation.get(player_data['country_of_citizenship'], player_data['country_of_citizenship'])
-                st.markdown(f"**Pays :** {pays}")
-                st.markdown(f"**Club :** {player_data['current_club_name']}")
-                # Traduction du poste en français
-                poste = position_translation.get(player_data['sub_position'], player_data['sub_position'])
-                st.markdown(f"**Poste :** {poste}")
-            
-            with col3:  
-                st.markdown(f"**Taille :** {int(player_data['height_in_cm'])} cm" if pd.notna(player_data['height_in_cm']) else "**Taille :** -")
-                st.markdown(f"**Valeur marchande :** {format_market_value(player_data['market_value_in_eur'])}")
-                st.markdown(f"**Fin de contrat :** {player_data['contract_expiration_date']}" if pd.notna(player_data['contract_expiration_date']) else "**Fin de contrat :** -")
-                st.markdown(f"**Matches joués :** {int(player_data['MP'])}" if pd.notna(player_data['MP']) else "**Matches joués :** -")
-                st.markdown(f"**Minutes joués :** {int(player_data['Min'])}" if pd.notna(player_data['Min']) else "**Minutes joués :** -")
+            <div style="flex: 1; text-align: center; min-width: 180px;">
+                <img src="{player_data['image_url']}" style="width: 100%; max-width: 150px; border-radius: 10px;">
+            </div>
+
+            <div style="flex: 2; min-width: 280px;">
+                <p><strong>Nom :</strong> {player_data['name']}</p>
+                <p><strong>Âge :</strong> {int(player_data['Age']) if pd.notna(player_data['Age']) else "-"}</p>
+                <p><strong>Pays :</strong> {pays}</p>
+                <p><strong>Club :</strong> {player_data['current_club_name']}</p>
+                <p><strong>Poste :</strong> {poste}</p>
+            </div>
+
+            <div style="flex: 2; min-width: 280px;">
+                <p><strong>Taille :</strong> {int(player_data['height_in_cm']) if pd.notna(player_data['height_in_cm']) else "-" } cm</p>
+                <p><strong>Valeur marchande :</strong> {format_market_value(player_data['market_value_in_eur'])}</p>
+                <p><strong>Fin de contrat :</strong> {player_data['contract_expiration_date'] if pd.notna(player_data['contract_expiration_date']) else "-"}</p>
+                <p><strong>Matches joués :</strong> {int(player_data['MP']) if pd.notna(player_data['MP']) else "-"}</p>
+                <p><strong>Minutes jouées :</strong> {int(player_data['Min']) if pd.notna(player_data['Min']) else "-"}</p>
+            </div>
+
+            </div>
+            """, unsafe_allow_html=True)
 
             # Filtre unique pour radar + similarité
             comparison_filter = st.radio(
@@ -828,25 +832,32 @@ def player_analysis():
                 f"<h4 style='text-align: center;'>Player profile</h4>",
                 unsafe_allow_html=True
             )
-            col1, col2, col3 = st.columns([1, 2, 2])
 
-            with col1:
-                if pd.notna(player_data['image_url']):
-                    st.image(player_data['image_url'], width=200)
+            st.markdown(f"""
+            <div style="display: flex; flex-direction: row; justify-content: space-between; gap: 2rem; flex-wrap: nowrap; align-items: center; overflow-x: auto;">
 
-            with col2:
-                st.markdown(f"**Name :** {player_data['name']}")
-                st.markdown(f"**Age :** {int(player_data['Age'])}" if pd.notna(player_data['Age']) else "**age :** -")
-                st.markdown(f"**Country :** {player_data['country_of_citizenship']}")
-                st.markdown(f"**Club :** {player_data['current_club_name']}")
-                st.markdown(f"**Position :** {player_data['sub_position']}")
+            <div style="flex: 1; text-align: center; min-width: 180px;">
+                <img src="{player_data['image_url']}" style="width: 100%; max-width: 150px; border-radius: 10px;">
+            </div>
 
-            with col3:  
-                st.markdown(f"**Height :** {int(player_data['height_in_cm'])} cm" if pd.notna(player_data['height_in_cm']) else "**Heigth :** -")
-                st.markdown(f"**Market Value :** {format_market_value(player_data['market_value_in_eur'])}")
-                st.markdown(f"**Contract :** {player_data['contract_expiration_date']}" if pd.notna(player_data['contract_expiration_date']) else "**Contract :** -")
-                st.markdown(f"**Matches played :** {int(player_data['MP'])}" if pd.notna(player_data['MP']) else "**Matches played :** -")
-                st.markdown(f"**Minutes played :** {int(player_data['Min'])}" if pd.notna(player_data['Min']) else "**Minutes played :** -")
+            <div style="flex: 2; min-width: 280px;">
+                <p><strong>Name :</strong> {player_data['name']}</p>
+                <p><strong>Age :</strong> {int(player_data['Age']) if pd.notna(player_data['Age']) else "-"}</p>
+                <p><strong>Country :</strong> {player_data['country_of_citizenship']}</p>
+                <p><strong>Club :</strong> {player_data['current_club_name']}</p>
+                <p><strong>Position :</strong> {player_data['sub_position']}</p>
+            </div>
+
+            <div style="flex: 2; min-width: 280px;">
+                <p><strong>Height :</strong> {int(player_data['height_in_cm']) if pd.notna(player_data['height_in_cm']) else "-" } cm</p>
+                <p><strong>Market Value :</strong> {format_market_value(player_data['market_value_in_eur'])}</p>
+                <p><strong>Contract :</strong> {player_data['contract_expiration_date'] if pd.notna(player_data['contract_expiration_date']) else "-"}</p>
+                <p><strong>Matches Played :</strong> {int(player_data['MP']) if pd.notna(player_data['MP']) else "-"}</p>
+                <p><strong>Minutes Played :</strong> {int(player_data['Min']) if pd.notna(player_data['Min']) else "-"}</p>
+            </div>
+
+            </div>
+            """, unsafe_allow_html=True)
 
             # Single filter for radar + similarity
             comparison_filter = st.radio(
@@ -1179,30 +1190,37 @@ def player_comparison():
             if player2:
                 player2_data = df[df['name'] == player2].iloc[0] # Récupération du nom du 2nd joueur
                 
-                st.markdown("<h4 style='text-align: center;'>Profils des joueurs</h4>", unsafe_allow_html=True) # Affichage les profils côte à côte
+                # On affiche le profil des joueurs
+                st.markdown("<h4 style='text-align: center;'>Profils des joueurs</h4>", unsafe_allow_html=True)
+
                 for pdata in [player1_data, player2_data]:
-                    col1, col2, col3 = st.columns([1, 2, 2])
+                    # Traductions
+                    pays = country_translation.get(pdata['country_of_citizenship'], pdata['country_of_citizenship'])
+                    poste = position_translation.get(pdata['sub_position'], pdata['sub_position'])
 
-                    with col1:
-                        if pd.notna(pdata['image_url']):
-                            st.image(pdata['image_url'], width=200)
+                    st.markdown(f"""
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; gap: 2rem; flex-wrap: nowrap; align-items: center; overflow-x: auto; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #e0e0e0;">
 
-                    with col2:
-                        st.markdown(f"**Nom :** {pdata['name']}")
-                        st.markdown(f"**Âge :** {int(pdata['Age'])}" if pd.notna(pdata['Age']) else "**Âge :** -")
-                        # Traduction du pays
-                        pays = country_translation.get(pdata['country_of_citizenship'], pdata['country_of_citizenship'])
-                        st.markdown(f"**Pays :** {pays}")
-                        st.markdown(f"**Club :** {pdata['current_club_name']}")
+                    <div style="flex: 1; text-align: center; min-width: 180px;">
+                        <img src="{pdata['image_url']}" style="width: 100%; max-width: 150px; border-radius: 10px;">
+                    </div>
 
+                    <div style="flex: 2; min-width: 280px;">
+                        <p><strong>Nom :</strong> {pdata['name']}</p>
+                        <p><strong>Âge :</strong> {int(pdata['Age']) if pd.notna(pdata['Age']) else "-"}</p>
+                        <p><strong>Pays :</strong> {pays}</p>
+                        <p><strong>Club :</strong> {pdata['current_club_name']}</p>
+                    </div>
 
-                    with col3:
-                        # Traduction du poste
-                        poste = position_translation.get(pdata['sub_position'], pdata['sub_position'])
-                        st.markdown(f"**Poste :** {poste}")
-                        st.markdown(f"**Taille :** {int(pdata['height_in_cm'])} cm" if pd.notna(pdata['height_in_cm']) else "**Taille :** -")
-                        st.markdown(f"**Valeur marchande :** {format_market_value(pdata['market_value_in_eur'])}")
-                        st.markdown(f"**Fin de contrat :** {pdata['contract_expiration_date']}" if pd.notna(pdata['contract_expiration_date']) else "**Fin de contrat :** -")
+                    <div style="flex: 2; min-width: 280px;">
+                        <p><strong>Poste :</strong> {poste}</p>
+                        <p><strong>Taille :</strong> {int(pdata['height_in_cm']) if pd.notna(pdata['height_in_cm']) else "-" } cm</p>
+                        <p><strong>Valeur marchande :</strong> {format_market_value(pdata['market_value_in_eur'])}</p>
+                        <p><strong>Fin de contrat :</strong> {pdata['contract_expiration_date'] if pd.notna(pdata['contract_expiration_date']) else "-"}</p>
+                    </div>
+
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 # Glossaire des statistiques associées
                 with st.expander(" Glossaire des statistiques"):
@@ -1433,27 +1451,33 @@ def player_comparison():
             if player2:
                 player2_data = df[df['name'] == player2].iloc[0] # Collecting the name of the player 2
                 
-                st.markdown("<h4 style='text-align: center;'>Players profile</h4>", unsafe_allow_html=True) # Display complete profiles side by side
+                # We display players profiles
+                st.markdown("<h4 style='text-align: center;'>Players profile</h4>", unsafe_allow_html=True)
 
                 for pdata in [player1_data, player2_data]:
-                    col1, col2, col3 = st.columns([1, 2, 2])
+                    st.markdown(f"""
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; gap: 2rem; flex-wrap: nowrap; align-items: center; overflow-x: auto; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #e0e0e0;">
 
-                    with col1:
-                        if pd.notna(pdata['image_url']):
-                            st.image(pdata['image_url'], width=200)
+                    <div style="flex: 1; text-align: center; min-width: 180px;">
+                        <img src="{pdata['image_url']}" style="width: 100%; max-width: 150px; border-radius: 10px;">
+                    </div>
 
-                    with col2:
-                        st.markdown(f"**Name :** {pdata['name']}")
-                        st.markdown(f"**Age :** {int(pdata['Age'])}" if pd.notna(pdata['Age']) else "**Age :** -")
-                        st.markdown(f"**Country :** {pdata['country_of_citizenship']}")
-                        st.markdown(f"**Club :** {pdata['current_club_name']}")
+                    <div style="flex: 2; min-width: 280px;">
+                        <p><strong>Name:</strong> {pdata['name']}</p>
+                        <p><strong>Age:</strong> {int(pdata['Age']) if pd.notna(pdata['Age']) else "-"}</p>
+                        <p><strong>Country:</strong> {pdata['country_of_citizenship']}</p>
+                        <p><strong>Club:</strong> {pdata['current_club_name']}</p>
+                    </div>
 
+                    <div style="flex: 2; min-width: 280px;">
+                        <p><strong>Position:</strong> {pdata['sub_position']}</p>
+                        <p><strong>Height:</strong> {int(pdata['height_in_cm']) if pd.notna(pdata['height_in_cm']) else "-"} cm</p>
+                        <p><strong>Market Value:</strong> {format_market_value(pdata['market_value_in_eur'])}</p>
+                        <p><strong>Contract:</strong> {pdata['contract_expiration_date'] if pd.notna(pdata['contract_expiration_date']) else "-"}</p>
+                    </div>
 
-                    with col3:
-                        st.markdown(f"**Position :** {pdata['sub_position']}")
-                        st.markdown(f"**Height :** {int(pdata['height_in_cm'])} cm" if pd.notna(pdata['height_in_cm']) else "**Taille :** -")
-                        st.markdown(f"**Market Value :** {format_market_value(pdata['market_value_in_eur'])}")
-                        st.markdown(f"**Contract :** {pdata['contract_expiration_date']}" if pd.notna(pdata['contract_expiration_date']) else "**Fin de contrat :** -")
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 # Glossary of Statistics associated
                 with st.expander("Glossary of Statistics"):
@@ -1781,20 +1805,33 @@ def ranking_basis():
 
             top3 = df_stat.head(3).reset_index(drop=True) # Affichage du podium
 
-            col1, col2, col3 = st.columns([1, 1, 1])
-            podium_order = [1, 0, 2]  # 2e, 1er, 3e
-            medals = ["🥈", "🥇", "🥉"]
+            # Ordre podium et médailles
+            podium_order = [0, 1, 2]
+            medals = ["🥇","🥈", "🥉"]
 
-            columns = [col1, col2, col3]
+            podium_html = "<div style='display: flex; overflow-x: auto; gap: 2rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #e0e0e0;'>"
 
-            # Limiter aux joueurs disponibles dans la tables
             for display_index, i in enumerate(podium_order):
                 if i < len(top3):
-                    with columns[display_index]:
-                        st.markdown(f"{medals[display_index]} **{top3.loc[i, 'name']}**")
-                        if pd.notna(top3.loc[i, 'image_url']):
-                            st.image(top3.loc[i, 'image_url'], width=150)
-                        st.markdown(f"<p style='font-size:16px; '><strong>{selected_stat_display} : </strong> {round(top3.loc[i, selected_stat])}</p>", unsafe_allow_html=True)
+                    player = top3.loc[i]
+                    name = player['name']
+                    stat = round(player[selected_stat]) if pd.notna(player[selected_stat]) else "-"
+                    image_url = player['image_url']
+                    image_html = f"<img src='{image_url}' style='width: 100%; max-width: 120px; border-radius: 10px; margin-bottom: 0.5rem;'>" if pd.notna(image_url) else ""
+
+                    player_html = (
+                        "<div style='min-width: 200px; text-align: center;'>"
+                        f"<div style='font-size: 30px;'>{medals[display_index]}</div>"
+                        f"<div style='font-weight: bold; font-size: 18px; margin: 0.5rem 0;'>{name}</div>"
+                        f"{image_html}"
+                        f"<div style='font-size: 16px;'><strong>{selected_stat_display}:</strong> {stat}</div>"
+                        "</div>"
+                    )
+                    podium_html += player_html
+
+            podium_html += "</div>"
+
+            st.markdown(podium_html, unsafe_allow_html=True)
 
             # Choix des colonnes dans la table
             final_df = df_stat.rename(columns={selected_stat: 'Statistique'})
@@ -1928,21 +1965,42 @@ def ranking_basis():
 
             top3 = df_stat.head(3).reset_index(drop=True) # Displaying podium
 
-            col1, col2, col3 = st.columns([1, 1, 1])
-            podium_order = [1, 0, 2]  # 2nd, 1st, 3rd
-            medals = ["🥈", "🥇", "🥉"]
+            podium_order = [0, 1, 2]  # 1st, 2nd, 3rd
+            medals = ["🥇", "🥈", "🥉"]
 
-            columns = [col1, col2, col3]
+            # Start of scrollable container
+            podium_html = "<div style='display: flex; overflow-x: auto; gap: 2rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #e0e0e0;'>"
 
-            # Limit to available players
+            # Creating player blocks
             for display_index, i in enumerate(podium_order):
                 if i < len(top3):
-                    with columns[display_index]:
-                        st.markdown(f"{medals[display_index]} **{top3.loc[i, 'name']}**")
-                        if pd.notna(top3.loc[i, 'image_url']):
-                            st.image(top3.loc[i, 'image_url'], width=150)
-                        stat_label = format_stat_name(selected_stat)
-                        st.markdown(f"<p style='font-size:16px;'><strong>{stat_label}:</strong> {round(top3.loc[i, selected_stat])}</p>", unsafe_allow_html=True)
+                    player = top3.loc[i]
+                    name = player['name']
+                    image_url = player['image_url']
+                    stat_val = round(player[selected_stat]) if pd.notna(player[selected_stat]) else "-"
+                    stat_label = format_stat_name(selected_stat)
+
+                    image_html = (
+                        f"<img src='{image_url}' style='width: 100%; max-width: 120px; border-radius: 10px; margin-bottom: 0.5rem;'>"
+                        if pd.notna(image_url) else ""
+                    )
+
+                    player_html = (
+                        "<div style='min-width: 200px; text-align: center;'>"
+                        f"<div style='font-size: 30px;'>{medals[display_index]}</div>"
+                        f"<div style='font-weight: bold; font-size: 18px; margin: 0.5rem 0;'>{name}</div>"
+                        f"{image_html}"
+                        f"<div style='font-size: 16px;'><strong>{stat_label}:</strong> {stat_val}</div>"
+                        "</div>"
+                    )
+
+                    podium_html += player_html
+
+            # Closing the container
+            podium_html += "</div>"
+
+            # Final display
+            st.markdown(podium_html, unsafe_allow_html=True)
 
             # We display the table with the columns desired
             final_df = df_stat.rename(columns={selected_stat: 'Statistic'})
@@ -1967,6 +2025,7 @@ def ranking():
         if not selected_stat:
             # Si la métrique est selectionné, nous cachons l'image
             if os.path.exists(image_path):
+                
                 st.image(image_path, use_container_width=True)
                 
         if selected_stat:
@@ -2185,20 +2244,42 @@ def ranking():
             )
             top3 = df_stat.head(3).reset_index(drop=True) # Affichage du podium
 
-            col1, col2, col3 = st.columns([1, 1, 1])
-            podium_order = [1, 0, 2]  # 2e, 1er, 3e
-            medals = ["🥈", "🥇", "🥉"]
+            podium_order = [0, 1, 2]
+            medals = ["🥇", "🥈", "🥉"]
 
-            columns = [col1, col2, col3]
+            podium_html = (
+                "<div style='overflow-x: auto; margin-bottom: 2rem; padding-bottom: 1rem; "
+                "border-bottom: 1px solid #e0e0e0; width: 100%;'>"
+                "<div style='display: inline-flex; gap: 2rem; white-space: nowrap;'>"
+            )
 
-            # Limiter aux joueurs disponibles dans la tables
             for display_index, i in enumerate(podium_order):
                 if i < len(top3):
-                    with columns[display_index]:
-                        st.markdown(f"{medals[display_index]} **{top3.loc[i, 'name']}**")
-                        if pd.notna(top3.loc[i, 'image_url']):
-                            st.image(top3.loc[i, 'image_url'], width=150)
-                        st.markdown(f"**{selected_stat} :** {round(top3.loc[i, selected_stat], 2)}")
+                    player = top3.loc[i]
+                    name = player['name']
+                    image_url = player['image_url']
+                    stat_val = round(player[selected_stat], 2) if pd.notna(player[selected_stat]) else "-"
+
+                    image_html = (
+                        f"<img src='{image_url}' style='width: 100%; max-width: 120px; "
+                        "border-radius: 10px; margin-bottom: 0.5rem;'>"
+                        if pd.notna(image_url) else ""
+                    )
+
+                    player_html = (
+                        "<div style='display: inline-block; min-width: 200px; max-width: 220px; text-align: center;'>"
+                        f"<div style='font-size: 30px;'>{medals[display_index]}</div>"
+                        f"<div style='font-weight: bold; font-size: 18px; margin: 0.5rem 0;'>{name}</div>"
+                        f"{image_html}"
+                        f"<div style='font-size: 16px;'><strong>{selected_stat}:</strong> {stat_val}</div>"
+                        "</div>"
+                    )
+
+                    podium_html += player_html
+
+            podium_html += "</div></div>"
+
+            st.markdown(podium_html, unsafe_allow_html=True)
 
             # Choix des colonnes dans la table
             final_df = df_stat.rename(columns={selected_stat: 'Statistique'})
@@ -2429,20 +2510,43 @@ def ranking():
 
             top3 = df_stat.head(3).reset_index(drop=True) # Displaying podium
 
-            col1, col2, col3 = st.columns([1, 1, 1])
-            podium_order = [1, 0, 2]  # 2nd, 1st, 3rd
-            medals = ["🥈", "🥇", "🥉"]
+            # Display the podium
+            podium_order = [0, 1, 2]
+            medals = ["🥇", "🥈", "🥉"]
 
-            columns = [col1, col2, col3]
+            podium_html = (
+                "<div style='overflow-x: auto; margin-bottom: 2rem; padding-bottom: 1rem; "
+                "border-bottom: 1px solid #e0e0e0; width: 100%;'>"
+                "<div style='display: inline-flex; gap: 2rem; white-space: nowrap;'>"
+            )
 
-            # Limit to available players
             for display_index, i in enumerate(podium_order):
                 if i < len(top3):
-                    with columns[display_index]:
-                        st.markdown(f"{medals[display_index]} **{top3.loc[i, 'name']}**")
-                        if pd.notna(top3.loc[i, 'image_url']):
-                            st.image(top3.loc[i, 'image_url'], width=150)
-                        st.markdown(f"**{selected_stat} :** {round(top3.loc[i, selected_stat], 2)}")
+                    player = top3.loc[i]
+                    name = player['name']
+                    image_url = player['image_url']
+                    stat_val = round(player[selected_stat], 2) if pd.notna(player[selected_stat]) else "-"
+
+                    image_html = (
+                        f"<img src='{image_url}' style='width: 100%; max-width: 120px; "
+                        "border-radius: 10px; margin-bottom: 0.5rem;'>"
+                        if pd.notna(image_url) else ""
+                    )
+
+                    player_html = (
+                        "<div style='display: inline-block; min-width: 200px; max-width: 220px; text-align: center;'>"
+                        f"<div style='font-size: 30px;'>{medals[display_index]}</div>"
+                        f"<div style='font-weight: bold; font-size: 18px; margin: 0.5rem 0;'>{name}</div>"
+                        f"{image_html}"
+                        f"<div style='font-size: 16px;'><strong>{selected_stat}:</strong> {stat_val}</div>"
+                        "</div>"
+                    )
+
+                    podium_html += player_html
+
+            podium_html += "</div></div>"
+
+            st.markdown(podium_html, unsafe_allow_html=True)
 
             # We display the table with the columns desired
             final_df = df_stat.rename(columns={selected_stat: 'Statistic'})
@@ -2602,18 +2706,42 @@ def scout():
 
                 # Construction du podium
                 top3 = df_stat.head(3)
-                col1, col2, col3 = st.columns([1, 1, 1])
-                podium_order = [1, 0, 2]
-                medals = ["🥈", "🥇", "🥉"]
-                columns = [col1, col2, col3]
+                podium_order = [0, 1, 2]
+                medals = ["🥇", "🥈", "🥉"]
+
+                podium_html = (
+                    "<div style='overflow-x: auto; margin-bottom: 2rem; padding-bottom: 1rem; "
+                    "border-bottom: 1px solid #e0e0e0; width: 100%;'>"
+                    "<div style='display: inline-flex; gap: 2rem; white-space: nowrap;'>"
+                )
 
                 for display_index, i in enumerate(podium_order):
                     if i < len(top3):
-                        with columns[display_index]:
-                            st.markdown(f"{medals[display_index]} **{top3.loc[i, 'name']}**")
-                            if pd.notna(top3.loc[i, 'image_url']):
-                                st.image(top3.loc[i, 'image_url'], width=150)
-                            st.markdown(f"**Note :** {round(top3.loc[i, 'rating'], 2)}")
+                        player = top3.loc[i]
+                        name = player['name']
+                        rating = round(player['rating'], 2) if pd.notna(player['rating']) else "-"
+                        image_url = player['image_url']
+                        
+                        image_html = (
+                            f"<img src='{image_url}' style='width: 100%; max-width: 120px; "
+                            "border-radius: 10px; margin-bottom: 0.5rem;'>"
+                            if pd.notna(image_url) else ""
+                        )
+
+                        player_block = (
+                            "<div style='display: inline-block; min-width: 200px; max-width: 220px; text-align: center;'>"
+                            f"<div style='font-size: 30px;'>{medals[display_index]}</div>"
+                            f"<div style='font-weight: bold; font-size: 18px; margin: 0.5rem 0;'>{name}</div>"
+                            f"{image_html}"
+                            f"<div style='font-size: 16px;'><strong>Note :</strong> {rating}</div>"
+                            "</div>"
+                        )
+
+                        podium_html += player_block
+
+                podium_html += "</div></div>"
+
+                st.markdown(podium_html, unsafe_allow_html=True)
 
                 final_df = df_stat.drop(columns=["image_url"]) # Suppression de image_url pour la table finale
                 st.dataframe(final_df, use_container_width=True)
@@ -2852,21 +2980,45 @@ def scout():
 
                 # We display a podium
                 top3 = df_stat.head(3)
-                col1, col2, col3 = st.columns([1, 1, 1])
-                podium_order = [1, 0, 2]
-                medals = ["🥈", "🥇", "🥉"]
-                columns = [col1, col2, col3]
+                podium_order = [0, 1, 2]
+                medals = ["🥇", "🥈", "🥉"]
+
+                podium_html = (
+                    "<div style='overflow-x: auto; margin-bottom: 2rem; padding-bottom: 1rem; "
+                    "border-bottom: 1px solid #e0e0e0; width: 100%;'>"
+                    "<div style='display: inline-flex; gap: 2rem; white-space: nowrap;'>"
+                )
 
                 for display_index, i in enumerate(podium_order):
                     if i < len(top3):
-                        with columns[display_index]:
-                            st.markdown(f"{medals[display_index]} **{top3.loc[i, 'name']}**")
-                            if pd.notna(top3.loc[i, 'image_url']):
-                                st.image(top3.loc[i, 'image_url'], width=150)
-                            st.markdown(f"**Rating:** {round(top3.loc[i, 'rating'], 2)}")
+                        player = top3.loc[i]
+                        name = player['name']
+                        rating = round(player['rating'], 2) if pd.notna(player['rating']) else "-"
+                        image_url = player['image_url']
+                        
+                        image_html = (
+                            f"<img src='{image_url}' style='width: 100%; max-width: 120px; "
+                            "border-radius: 10px; margin-bottom: 0.5rem;'>"
+                            if pd.notna(image_url) else ""
+                        )
+
+                        player_block = (
+                            "<div style='display: inline-block; min-width: 200px; max-width: 220px; text-align: center;'>"
+                            f"<div style='font-size: 30px;'>{medals[display_index]}</div>"
+                            f"<div style='font-weight: bold; font-size: 18px; margin: 0.5rem 0;'>{name}</div>"
+                            f"{image_html}"
+                            f"<div style='font-size: 16px;'><strong>Rating :</strong> {rating}</div>"
+                            "</div>"
+                        )
+
+                        podium_html += player_block
+
+                podium_html += "</div></div>"
+
+                st.markdown(podium_html, unsafe_allow_html=True)
 
                 final_df = df_stat.drop(columns=["image_url"])
-                st.dataframe(final_df, use_container_width=True)
+                st.dataframe(final_df, use_container_width=True) # We didsplay the entire list of players asked
 
         # Sidebar summary
         with st.sidebar:
