@@ -537,6 +537,7 @@ def player_analysis():
             # Aucun joueur sélectionné → afficher l'image d'intro
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
+                st.info("Dérouler la barre latérale pour choisir la langue et le joueur à analyser")
         else:
             player_data = df[df['name'] == selected_player].iloc[0] # Filtrer le DataFrame pour le joueur sélectionné
 
@@ -578,9 +579,9 @@ def player_analysis():
                 "Comparer à son poste avec :",
                 options=[
                     "Aucun filtre",
-                    "Même championnat",
-                    "Même tranche d’âge",
-                    "Même pays"
+                    "Championnat",
+                    "Tranche d’âge",
+                    "Pays"
                 ],
                 index=0,
                 horizontal=True
@@ -588,9 +589,9 @@ def player_analysis():
 
             filter_arg = {
                 "Aucun filtre": None,
-                "Même championnat": "championnat",
-                "Même tranche d’âge": "tranche_age",
-                "Même pays": "pays"
+                "Championnat": "championnat",
+                "Tranche d’âge": "tranche_age",
+                "Pays": "pays"
             }[comparison_filter]
 
             poste_cat = position_category.get(player_data['sub_position'], None)
@@ -838,6 +839,7 @@ def player_analysis():
             # No player selected → show intro image
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
+                st.info("Scroll down the sidebar to select the language and the player you wish to analyze")
         else:
             player_data = df[df['name'] == selected_player].iloc[0] # Filter the DataFrame for the selected player
 
@@ -878,9 +880,9 @@ def player_analysis():
                 "Compare his position with :",
                 options=[
                     "No filter",
-                    "Same championship",
-                    "Same age group",
-                    "Same country"
+                    "Championship",
+                    "Age group",
+                    "Country"
                 ],
                 index=0,
                 horizontal=True
@@ -888,9 +890,9 @@ def player_analysis():
 
             filter_arg = {
                 "No filter": None,
-                "Same championship": "championnat",
-                "Same age group": "tranche_age",
-                "Same country": "pays"
+                "Championship": "championnat",
+                "Age group": "tranche_age",
+                "Country": "pays"
             }[comparison_filter]
 
             poste_cat = position_category.get(player_data['sub_position'], None)
@@ -1176,6 +1178,7 @@ def player_comparison():
             # Aucun joueur sélectionné → afficher l'image d'intro
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
+                st.info("Dérouler la barre latérale pour choisir la langue et les joueurs à analyser")
 
         if player1:
             # Nous stockons les informations du 1er joueur
@@ -1200,6 +1203,8 @@ def player_comparison():
                 # Aucun joueur sélectionné → afficher l'image d'intro
                 if os.path.exists(image_path):
                     st.image(image_path, use_container_width=True)
+                    st.info("Dérouler la barre latérale pour choisir la langue et les joueurs à analyser")
+
 
             if player2:
                 player2_data = df[df['name'] == player2].iloc[0] # Récupération du nom du 2nd joueur
@@ -1438,6 +1443,7 @@ def player_comparison():
             # If the player is selected, we hide the image
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
+                st.info("Scroll down the sidebar to select the language and players for analysis")
 
         if player1:
             # Collecting the data for the players
@@ -1461,6 +1467,8 @@ def player_comparison():
                 # If the player is selected, we hide the image
                 if os.path.exists(image_path):
                     st.image(image_path, use_container_width=True)
+                    st.info("Scroll down the sidebar to select the language and players for analysis")
+                    
 
             if player2:
                 player2_data = df[df['name'] == player2].iloc[0] # Collecting the name of the player 2
@@ -1705,6 +1713,8 @@ def ranking_basis():
             # Si la métrique est selectionné, nous cachons l'image
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
+                st.info("Dérouler la barre latérale pour sélectionner la langue, la métrique et les filtres de votre choix")
+
                 
         if selected_stat:
             # Début de la sidebar
@@ -1878,6 +1888,7 @@ def ranking_basis():
             # If the metric is selected, we hide the image
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
+                st.info("Scroll down the sidebar to select the language, metric and filters of your choice")
                 
                 
         if selected_stat:
@@ -2039,8 +2050,8 @@ def ranking():
         if not selected_stat:
             # Si la métrique est selectionné, nous cachons l'image
             if os.path.exists(image_path):
-                
                 st.image(image_path, use_container_width=True)
+                st.info("Dérouler la barre latérale pour sélectionner la langue, la métrique et les filtres de votre choix")
                 
         if selected_stat:
             # Début de la sidebar
@@ -2318,6 +2329,7 @@ def ranking():
             # If the metric is selected, we hide the image
             if os.path.exists(image_path):
                 st.image(image_path, use_container_width=True)
+                st.info("Scroll down the sidebar to select the language, metric and filters of your choice")
                 
         if selected_stat:
             # Top of the sidebar
@@ -2641,7 +2653,23 @@ def scout():
                 adv_stat_limits[stat] = st.slider(f"{stat} (min / max)", min_val, max_val, (min_val, max_val))
 
         nb_players = st.slider("Nombre de joueurs à afficher", 3, 30, 10) # Choix de nombre de joueurs à afficher
-        recherche = st.columns(3)[1].button("🔍 Rechercher") # Mise en place du bouton Rechercher
+        
+        # Injecte du CSS pour centrer tous les boutons
+        st.markdown(
+            """
+            <style>
+            div.stButton > button {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Et ici le vrai bouton fonctionnel
+        recherche = st.button("🔍 Rechercher")
 
         # On s'assure qu'un minimum d'informations a été renseigné
         nb_filled = sum([
@@ -2650,8 +2678,8 @@ def scout():
         ])
 
         if recherche:
-            if nb_filled < 2:
-                st.error("Veuillez remplir au moins 2 critères pour lancer la recherche.")
+            if nb_filled < 1:
+                st.error("Veuillez remplir au moins 1 critères pour lancer la recherche.")
             else:
                 # On récupère les données associées
                 df_filtered = df.copy()
@@ -2922,19 +2950,34 @@ def scout():
                 adv_stat_limits[stat] = st.slider(f"{stat} (min / max)", min_val, max_val, (min_val, max_val))
 
         nb_players = st.slider("Number of players to display", 3, 30, 10) # Choice of the number of players to display
-        search = st.columns(3)[1].button("🔍 Search") # Creation of the button Search
+
+        # Inject CSS to center all buttons
+        st.markdown(
+            """
+            <style>
+            div.stButton > button {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # And here's the real functional button
+        search = st.button("🔍 Search")
 
 
-
-        # We want that 2 criterias to start the search
+        # We want that 1 criterias to start the search
         nb_filled = sum([
             bool(country), bool(position), bool(contract_year), bool(leagues),
             bool(club), len(selected_base_stats) > 0, len(selected_adv_stats) > 0
         ])
 
         if search:
-            if nb_filled < 2:
-                st.error("Please fill at least 2 criterias to start the search.")
+            if nb_filled < 1:
+                st.error("Please fill at least 1 criteria to start the search.")
             else:
                 # We recovering the data
                 df_filtered = df.copy()
