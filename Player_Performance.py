@@ -46,8 +46,8 @@ st.session_state["lang"] = lang
 # Création du menu horizontal / Horizontal menu at the top of the page /
 menu = option_menu(
     menu_title=None,
-    options=["Menu", "Joueur", "Duel","Stats", "Stats +", "Scout"] if lang == "Français" else
-            ["Home", "Player", "F2F","Stats", "Stats +","Scout"],
+    options=["Menu", "Joueur", "Duel","Stats +", "Stats", "Scout"] if lang == "Français" else
+            ["Home", "Player", "F2F","Stats +", "Stats","Scout"],
     icons=["house", "person", "crosshair","trophy", "list-ol","binoculars"],
     orientation="horizontal",
 )
@@ -387,8 +387,8 @@ def home():
             <ul>
                 <li><strong>📊 Analyse d'un Joueur</strong> : Analyse du joueur de votre choix à travers plusieurs statistiques</li>
                 <li><strong>🥊 Comparaison entre Joueurs</strong> : Analyse comparative entre deux joueurs du même poste</li>
-                <li><strong>🏆 Classement des joueurs (Stats de Base) </strong> : Classement des joueurs par performance selon une statistique de base choisie</li>
-                <li><strong>🥇 Classement des joueurs (Stats Avancées) </strong> : Classement des joueurs par performance selon une statistique avancée choisie</li>
+                <li><strong>🏆 Classement des joueurs (Stats Aggrégées) </strong> : Classement des joueurs par performance selon une statistique aggrégée choisie</li>
+                <li><strong>🥇 Classement des joueurs (Stats Brutes) </strong> : Classement des joueurs par performance selon une statistique brute choisie</li>
                 <li><strong>🔎 Scouting </strong> : Établissement d'une liste de joueurs collant aux critères choisis</li>
             </ul>
 
@@ -470,8 +470,8 @@ def home():
             <ul>
                 <li><strong>📊 Player Analysis</strong>: Analyze the player of your choice through various statistics</li>
                 <li><strong>🥊 Player Comparison</strong>: Compare two players who play in the same position</li>
-                <li><strong>🏆 Player Ranking (Advanced Statistics) </strong>: Rank players based on a chosen advanced statistic</li>
-                <li><strong>🥇 Player Ranking (Basis Statistics) </strong>: Rank players based on a chosen basis statistic</li>
+                <li><strong>🏆 Player Ranking (Aggregate Statistics) </strong>: Rank players based on a chosen aggregate statistic according to their position</li>
+                <li><strong>🥇 Player Ranking (Raw Statistics) </strong>: Rank players based on a chosen raw statistic</li>
                 <li><strong>🔎 Scouting </strong> : Drawing up a list of players matching the chosen criteria</li>
             </ul>
 
@@ -536,7 +536,7 @@ def player_analysis():
         if not selected_player:
             # Aucun joueur sélectionné → afficher l'image d'intro
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Dérouler la barre latérale pour choisir la langue et le joueur à analyser")
         else:
             player_data = df[df['name'] == selected_player].iloc[0] # Filtrer le DataFrame pour le joueur sélectionné
@@ -838,7 +838,7 @@ def player_analysis():
         if not selected_player:
             # No player selected → show intro image
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Scroll down the sidebar to select the language and the player you wish to analyze")
         else:
             player_data = df[df['name'] == selected_player].iloc[0] # Filter the DataFrame for the selected player
@@ -1177,7 +1177,7 @@ def player_comparison():
         if not player1:
             # Aucun joueur sélectionné → afficher l'image d'intro
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Dérouler la barre latérale pour choisir la langue et les joueurs à analyser")
 
         if player1:
@@ -1202,7 +1202,7 @@ def player_comparison():
             if not player2:
                 # Aucun joueur sélectionné → afficher l'image d'intro
                 if os.path.exists(image_path):
-                    st.image(image_path, use_container_width=True)
+                    st.image(image_path)
                     st.info("Dérouler la barre latérale pour choisir la langue et les joueurs à analyser")
 
 
@@ -1442,7 +1442,7 @@ def player_comparison():
         if not player1:
             # If the player is selected, we hide the image
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Scroll down the sidebar to select the language and players for analysis")
 
         if player1:
@@ -1466,7 +1466,7 @@ def player_comparison():
             if not player2:
                 # If the player is selected, we hide the image
                 if os.path.exists(image_path):
-                    st.image(image_path, use_container_width=True)
+                    st.image(image_path)
                     st.info("Scroll down the sidebar to select the language and players for analysis")
                     
 
@@ -1684,11 +1684,11 @@ def player_comparison():
                     with col2:
                         st.pyplot(fig_pizza_stat_adv)
 
-# Page du classement des joueurs pour les statistiques de base / Player ranking page by basis statistics
+# Page du classement des joueurs pour les statistiques aggrégées selon leur position / Player ranking page by aggregate statistics according to their position
 def ranking_basis():
     # Page en français
     if lang == "Français":
-        st.markdown("<h4 style='text-align: center;'>🏅 Classement des joueurs (0-100) pour les statistiques de base selon leur position</h4>", unsafe_allow_html=True) # Affichage du titre de la page
+        st.markdown("<h4 style='text-align: center;'>🏅 Classement des joueurs (0-100) pour les statistiques aggrégées selon leur poste</h4>", unsafe_allow_html=True) # Affichage du titre de la page
         image_path = os.path.join(os.path.dirname(__file__), "image", "player_ranking_basis.jpg") # Construction du chemin pour l'image
         df = pd.read_csv("data/database_player.csv") # Récupération des données
         
@@ -1712,7 +1712,7 @@ def ranking_basis():
         if not selected_stat:
             # Si la métrique est selectionné, nous cachons l'image
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Dérouler la barre latérale pour sélectionner la langue, la métrique et les filtres de votre choix")
 
                 
@@ -1867,7 +1867,7 @@ def ranking_basis():
 
     else:
 
-        st.markdown("<h4 style='text-align: center;'>🏅 Player rankings (0-100) for basic statistics according to their position</h4>", unsafe_allow_html=True) # Display title
+        st.markdown("<h4 style='text-align: center;'>🏅 Player rankings (0-100) for aggregate statistics according to their position</h4>", unsafe_allow_html=True) # Display title
         image_path = os.path.join(os.path.dirname(__file__), "image", "player_ranking_basis.jpg") # Path of the image
         df = pd.read_csv("data/database_player.csv") # Collect the data
         
@@ -1887,7 +1887,7 @@ def ranking_basis():
         if not selected_stat:
             # If the metric is selected, we hide the image
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Scroll down the sidebar to select the language, metric and filters of your choice")
                 
                 
@@ -2035,11 +2035,11 @@ def ranking_basis():
 
             st.dataframe(final_df, use_container_width=True)
 
-# Page du classement des joueurs pour les statistiques avancées / Player ranking page by advanced statistics
+# Page du classement des joueurs pour les statistiques brutes / Player ranking page by raw statistics
 def ranking():
     # Page en français
     if lang == "Français":
-        st.markdown("<h4 style='text-align: center;'>🏆 Classement des joueurs pour les statistiques avancées</h4>", unsafe_allow_html=True) # Affichage du titre de la page
+        st.markdown("<h4 style='text-align: center;'>🏆 Classement des joueurs pour les statistiques brutes</h4>", unsafe_allow_html=True) # Affichage du titre de la page
         image_path = os.path.join(os.path.dirname(__file__), "image", "player_ranking.jpg") # Construction du chemin pour l'image
         df = pd.read_csv("data/database_player.csv") # Récupération des données
 
@@ -2050,7 +2050,7 @@ def ranking():
         if not selected_stat:
             # Si la métrique est selectionné, nous cachons l'image
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Dérouler la barre latérale pour sélectionner la langue, la métrique et les filtres de votre choix")
                 
         if selected_stat:
@@ -2315,7 +2315,7 @@ def ranking():
             st.dataframe(final_df, use_container_width=True)
 
     else:
-        st.markdown("<h4 style='text-align: center;'>🏆 Player ranking for advanced statistics</h4>", unsafe_allow_html=True) # Display the title
+        st.markdown("<h4 style='text-align: center;'>🏆 Player rankings for raw statistics</h4>", unsafe_allow_html=True) # Display the title
         
         image_path = os.path.join(os.path.dirname(__file__), "image", "player_ranking.jpg") # Bulding the path for the image
 
@@ -2328,7 +2328,7 @@ def ranking():
         if not selected_stat:
             # If the metric is selected, we hide the image
             if os.path.exists(image_path):
-                st.image(image_path, use_container_width=True)
+                st.image(image_path)
                 st.info("Scroll down the sidebar to select the language, metric and filters of your choice")
                 
         if selected_stat:
@@ -3194,9 +3194,9 @@ elif menu in ["Joueur", "Player"]:
     player_analysis()
 elif menu in ["Duel", "F2F"]:
     player_comparison()
-elif menu in ["Stats"]:
-    ranking_basis()
 elif menu in ["Stats +"]:
+    ranking_basis()
+elif menu in ["Stats"]:
     ranking()
 elif menu in ["Scout"]:
     scout()
