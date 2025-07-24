@@ -578,7 +578,7 @@ def player_analysis():
             comparison_filter = st.radio(
                 "En comparaison à son poste : ",
                 options=[
-                    "Vue d'ensemble",
+                    "Vue globale",
                     "Championnat",
                     "Tranche d’âge",
                     "Pays"
@@ -588,7 +588,7 @@ def player_analysis():
             )
 
             filter_arg = {
-                "Vue d'ensemble": None,
+                "Vue globale": None,
                 "Championnat": "championnat",
                 "Tranche d’âge": "tranche_age",
                 "Pays": "pays"
