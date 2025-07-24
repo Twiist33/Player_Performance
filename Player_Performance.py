@@ -576,9 +576,9 @@ def player_analysis():
 
             # Filtre unique pour radar + similarité
             comparison_filter = st.radio(
-                "Comparer à son poste avec :",
+                "En comparaison à son poste : ",
                 options=[
-                    "Aucun filtre",
+                    "Vue d'ensemble",
                     "Championnat",
                     "Tranche d’âge",
                     "Pays"
@@ -588,7 +588,7 @@ def player_analysis():
             )
 
             filter_arg = {
-                "Aucun filtre": None,
+                "Vue d'ensemble": None,
                 "Championnat": "championnat",
                 "Tranche d’âge": "tranche_age",
                 "Pays": "pays"
@@ -877,9 +877,9 @@ def player_analysis():
 
             # Single filter for radar + similarity
             comparison_filter = st.radio(
-                "Compare his position with :",
+                "Compared to his position :",
                 options=[
-                    "No filter",
+                    "Overview",
                     "Championship",
                     "Age group",
                     "Country"
@@ -889,7 +889,7 @@ def player_analysis():
             )
 
             filter_arg = {
-                "No filter": None,
+                "Overview": None,
                 "Championship": "championnat",
                 "Age group": "tranche_age",
                 "Country": "pays"
