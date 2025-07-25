@@ -16,8 +16,8 @@ Plusieurs fonctionnalités seront disponibles au sein de cette application web :
 
 - 📊 Analyse d'un Joueur : Analyse du joueur de votre choix à travers plusieurs statistiques
 - 🥊 Comparaison entre Joueurs : Analyse comparative entre deux joueurs du même poste
-- 🏆 Classement des joueurs (Stats de Base) : Classement des joueurs par performance selon une statistique de base choisie
-- 🥇 Classement des joueurs (Stats Avancées) : Classement des joueurs par performance selon une statistique avancée choisie
+- 🏆 Classement des joueurs (Stats Aggrégées par Catégorie) : Classement des joueurs par performance selon une statistique aggrégée par catégorie choisie
+- 🥇 Classement des joueurs (Stats Brutes) : Classement des joueurs par performance selon une statistique brute avancée choisie
 - 🔎 Scouting : Établissement d'une liste de joueurs collant aux critères choisis
 
 
@@ -39,8 +39,8 @@ Several features will be available within this web application:
 
 - 📊 Player Analysis: Analyze the player of your choice through various statistics
 - 🥊 Player Comparison: Compare two players who play in the same position
-- 🏆 Player Ranking (Advanced Statistics) : Rank players based on a chosen advanced statistic
-- 🥇 Player Ranking (Basis Statistics) : Rank players based on a chosen basis statistic
+- 🏆 Player Ranking (Aggregate Statistics by Category) : Rank players based on a chosen aggregate statistic by category
+- 🥇 Player Ranking (Raw Statistics) : Rank players based on a chosen rawstatistic
 - 🔎 Scouting : Drawing up a list of players matching the chosen criteria
 <br/><br/>
 

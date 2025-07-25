@@ -387,7 +387,7 @@ def home():
             <ul>
                 <li><strong>📊 Analyse d'un Joueur</strong> : Analyse du joueur de votre choix à travers plusieurs statistiques</li>
                 <li><strong>🥊 Comparaison entre Joueurs</strong> : Analyse comparative entre deux joueurs du même poste</li>
-                <li><strong>🏆 Classement des joueurs (Stats Aggrégées) </strong> : Classement des joueurs par performance selon une statistique aggrégée choisie</li>
+                <li><strong>🏆 Classement des joueurs (Stats Aggrégées par Catégorie) </strong> : Classement des joueurs par performance selon une statistique aggrégée par catégorie choisie</li>
                 <li><strong>🥇 Classement des joueurs (Stats Brutes) </strong> : Classement des joueurs par performance selon une statistique brute choisie</li>
                 <li><strong>🔎 Scouting </strong> : Établissement d'une liste de joueurs collant aux critères choisis</li>
             </ul>
@@ -470,7 +470,7 @@ def home():
             <ul>
                 <li><strong>📊 Player Analysis</strong>: Analyze the player of your choice through various statistics</li>
                 <li><strong>🥊 Player Comparison</strong>: Compare two players who play in the same position</li>
-                <li><strong>🏆 Player Ranking (Aggregate Statistics) </strong>: Rank players based on a chosen aggregate statistic according to their position</li>
+                <li><strong>🏆 Player Ranking (Aggregate Statistics by Category) </strong>: Rank players based on a chosen aggregate statistic by category according to their position</li>
                 <li><strong>🥇 Player Ranking (Raw Statistics) </strong>: Rank players based on a chosen raw statistic</li>
                 <li><strong>🔎 Scouting </strong> : Drawing up a list of players matching the chosen criteria</li>
             </ul>
@@ -1688,7 +1688,7 @@ def player_comparison():
 def ranking_basis():
     # Page en français
     if lang == "Français":
-        st.markdown("<h4 style='text-align: center;'>🏅 Classement des joueurs (0-100) pour les statistiques aggrégées selon leur poste</h4>", unsafe_allow_html=True) # Affichage du titre de la page
+        st.markdown("<h4 style='text-align: center;'>🏅 Classement des joueurs (0-100) pour les statistiques aggrégées par catégorie selon leur poste</h4>", unsafe_allow_html=True) # Affichage du titre de la page
         image_path = os.path.join(os.path.dirname(__file__), "image", "player_ranking_basis.jpg") # Construction du chemin pour l'image
         df = pd.read_csv("data/database_player.csv") # Récupération des données
         
@@ -1867,7 +1867,7 @@ def ranking_basis():
 
     else:
 
-        st.markdown("<h4 style='text-align: center;'>🏅 Player rankings (0-100) for aggregate statistics according to their position</h4>", unsafe_allow_html=True) # Display title
+        st.markdown("<h4 style='text-align: center;'>🏅 Player rankings (0-100) for aggregate statistics by category according to their position</h4>", unsafe_allow_html=True) # Display title
         image_path = os.path.join(os.path.dirname(__file__), "image", "player_ranking_basis.jpg") # Path of the image
         df = pd.read_csv("data/database_player.csv") # Collect the data
         
