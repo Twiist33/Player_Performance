@@ -2630,7 +2630,7 @@ def scout():
         ]
         stat_name_mapping = dict(zip(translated_stats, all_stats_raw))
 
-        selected_base_stats_display = st.multiselect("Statistiques de base", translated_stats, placeholder="")
+        selected_base_stats_display = st.multiselect("Statistiques aggrégées par catégorie", translated_stats, placeholder="")
         selected_base_stats = [stat_name_mapping[disp] for disp in selected_base_stats_display if disp in stat_name_mapping]
         base_stat_limits = {}
         for display_name in selected_base_stats_display:
@@ -2646,7 +2646,7 @@ def scout():
         # Statistiques avancées (à partir de la 30e colonne)
         selected_adv_stats, adv_stat_limits = [], {}
         adv_columns = df.columns[30:]
-        selected_adv_stats = st.multiselect("Statistiques avancées", list(adv_columns), placeholder="")
+        selected_adv_stats = st.multiselect("Statistiques brutes", list(adv_columns), placeholder="")
         for stat in selected_adv_stats:
             if stat in df.columns:
                 min_val, max_val = float(df[stat].min()), float(df[stat].max())
@@ -2806,14 +2806,14 @@ def scout():
                 st.markdown(f"- **Clubs :** {', '.join(club)}")
 
             if selected_base_stats_display:
-                st.markdown("**Stats de base :**")
+                st.markdown("**Stats aggrégées par catégorie :**")
                 for disp_label in selected_base_stats_display:
                     raw_stat = stat_name_mapping.get(disp_label)
                     if raw_stat in base_stat_limits:
                         st.markdown(f"- {disp_label} : {base_stat_limits[raw_stat]}")
 
             if selected_adv_stats:
-                st.markdown("**Stats avancées :**")
+                st.markdown("**Stats brutes :**")
                 for stat in selected_adv_stats:
                     if stat in adv_stat_limits:
                         st.markdown(f"- {stat} : {adv_stat_limits[stat]}")
@@ -2932,7 +2932,7 @@ def scout():
         translated_stats = [format_stat_name(col) for col in all_stats_raw]
         stat_name_mapping = dict(zip(translated_stats, all_stats_raw))
 
-        selected_base_stats_display = st.multiselect("Base statistics", translated_stats, placeholder="")
+        selected_base_stats_display = st.multiselect("Aggregate statistics by category", translated_stats, placeholder="")
         selected_base_stats = [stat_name_mapping[disp] for disp in selected_base_stats_display if disp in stat_name_mapping]
         base_stat_limits = {}
         for display_name in selected_base_stats_display:
@@ -2943,7 +2943,7 @@ def scout():
         # Advanced statistics (from column 30)
         selected_adv_stats, adv_stat_limits = [], {}
         adv_columns = df.columns[30:]
-        selected_adv_stats = st.multiselect("Advanced statistics", list(adv_columns), placeholder="")
+        selected_adv_stats = st.multiselect("Raw statistics", list(adv_columns), placeholder="")
         for stat in selected_adv_stats:
             if stat in df.columns:
                 min_val, max_val = float(df[stat].min()), float(df[stat].max())
@@ -3097,14 +3097,14 @@ def scout():
                 st.markdown(f"- **Club:** {', '.join(club)}")
 
             if selected_base_stats_display:
-                st.markdown("**Base Stats:**")
+                st.markdown("**Aggregate Stats by category:**")
                 for disp_label in selected_base_stats_display:
                     raw_stat = stat_name_mapping.get(disp_label)
                     if raw_stat in base_stat_limits:
                         st.markdown(f"- {disp_label}: {base_stat_limits[raw_stat]}")
 
             if selected_adv_stats:
-                st.markdown("**Advanced Stats:**")
+                st.markdown("**Raw Stats:**")
                 for stat in selected_adv_stats:
                     if stat in adv_stat_limits:
                         st.markdown(f"- {stat}: {adv_stat_limits[stat]}")
