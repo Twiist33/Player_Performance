@@ -2819,7 +2819,7 @@ def scout():
                         st.markdown(f"- {stat} : {adv_stat_limits[stat]}")
 
         # Placement du glossaire en sidebar
-        with st.sidebar.expander("Glossaire des statistiques avancées"):
+        with st.sidebar.expander("Glossaire des statistiques"):
             st.markdown("""
             ### Statistiques générales
             - **MP** : Nombre de matches joués
@@ -3110,7 +3110,7 @@ def scout():
                         st.markdown(f"- {stat}: {adv_stat_limits[stat]}")
 
         # Gloassary in the sidebar
-        with st.sidebar.expander("Glossary of advanced statistics"):
+        with st.sidebar.expander("Glossary of statistics"):
             st.markdown("""
             ### General statistics
             - **MP** : Number of matches played
