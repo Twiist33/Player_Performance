@@ -1069,7 +1069,7 @@ def player_analysis():
                         pizza_cols = [
                             "score_goal_scoring_created", "score_finish", "score_building", "score_creation",
                             "score_dribble", "score_projection", "score_defensive_actions", "score_waste",
-                            "score_faults_committed", "score_provoked_fouls", "score_aeria"
+                            "score_faults_committed", "score_provoked_fouls", "score_aerial"
                         ]
 
                     # We keep only the columns present
@@ -1108,7 +1108,7 @@ def player_analysis():
                         pizza_cols = [
                             "score_goal_scoring_created", "score_finish", "score_building", "score_creation",
                             "score_dribble", "score_projection", "score_defensive_actions", "score_waste",
-                            "score_faults_committed", "score_provoked_fouls", "score_aeria"
+                            "score_faults_committed", "score_provoked_fouls", "score_aerial"
                         ]
 
                     # We keep only the columns present
@@ -1391,7 +1391,7 @@ def player_comparison():
                         pizza_cols = [
                             "score_goal_scoring_created", "score_finish", "score_building", "score_creation",
                             "score_dribble", "score_projection", "score_defensive_actions", "score_waste",
-                            "score_faults_committed", "score_provoked_fouls", "score_aeria"
+                            "score_faults_committed", "score_provoked_fouls", "score_aerial"
                         ]
 
                     # Nous ne gardons uniquement les colonnes d'interêt pour le poste
@@ -1651,7 +1651,7 @@ def player_comparison():
                         pizza_cols = [
                             "score_goal_scoring_created", "score_finish", "score_building", "score_creation",
                             "score_dribble", "score_projection", "score_defensive_actions", "score_waste",
-                            "score_faults_committed", "score_provoked_fouls", "score_aeria"
+                            "score_faults_committed", "score_provoked_fouls", "score_aerial"
                         ]
 
                     # We keep only the columns of interest for the post
