@@ -205,6 +205,8 @@ category_stats = {
     "Attaquants": ["npxG_per90","Sh_per90", "G-PK_per90", "G-xG_per90", "G/Sh", "PrgP_per90", "PrgR_per90", "Cmp%", "xAG_per90","Succ_per90", "PrgC_per90", "Dis_per90"    ]
 }
 
+invert_stats = {"GA_per90", "PSxG_per90","Err_per90", "CrdY_per90", "Dis_per90"}
+
 # Fonction pour renommer les noms des catégories / Function for renaming category names
 def format_stat_name(stat):
     if stat.startswith("score_"):
@@ -731,15 +733,31 @@ def player_analysis():
                     radar_df = group_df[['name'] + stats_cols].dropna(subset=stats_cols).copy()
                     radar_df = radar_df.set_index('name')
 
+                    # On s'assure que le joueur est présent dans la catégorie de poste
                     if player_data['name'] not in radar_df.index:
-                        radar_df.loc[player_data['name']] = player_data[stats_cols]
+                        radar_df.loc[player_data['name']] = pd.Series(player_data).reindex(stats_cols)
 
-                    stats_min = radar_df[stats_cols].min()
-                    stats_max = radar_df[stats_cols].max()
-                    radar_df_normalized = (radar_df[stats_cols] - stats_min) / (stats_max - stats_min) # Normalisation du radar
+                    radar_vals = radar_df[stats_cols].apply(pd.to_numeric, errors='coerce')
 
-                    player_norm = radar_df_normalized.loc[player_data['name']].reindex(stats_cols).fillna(0) # Normalisation des données
-                    group_median = radar_df_normalized.drop(index=player_data['name'], errors='ignore').median().reindex(stats_cols).fillna(0) # Calcul de la médiane
+                    # On établit le rang en percentile par catégorie pour chaque joueur (0 = plus faible, 1 = plus élevé)
+                    rank_pct = radar_vals.rank(pct=True, method='average', ascending=True)
+
+                    # On inverse les métriques où "plus petit = mieux"
+                    invert_stats = globals().get("invert_stats", set())
+                    for col in stats_cols:
+                        if col in invert_stats:
+                            rank_pct[col] = 1 - rank_pct[col]
+
+                    # On normalise le profil du joueur en percentiles
+                    player_norm = rank_pct.loc[player_data['name']].reindex(stats_cols).fillna(0)
+
+                    # On calcule la médiane selon la catégorie de poste
+                    group_median = (
+                        rank_pct.drop(index=player_data['name'], errors='ignore')
+                                .median()
+                                .reindex(stats_cols)
+                                .fillna(0)
+                    )
 
                     # Calcul de la note si elle existe
                     rating_text = f" - Note : {round(player_rating, 2)}" if player_rating is not None else ""
@@ -1031,16 +1049,31 @@ def player_analysis():
                     radar_df = group_df[['name'] + stats_cols].dropna(subset=stats_cols).copy()
                     radar_df = radar_df.set_index('name')
 
+                    # We ensure that the player is present in the position category.
                     if player_data['name'] not in radar_df.index:
-                        radar_df.loc[player_data['name']] = player_data[stats_cols]
+                        radar_df.loc[player_data['name']] = pd.Series(player_data).reindex(stats_cols)
 
-                    stats_min = radar_df[stats_cols].min()
-                    stats_max = radar_df[stats_cols].max()
-                    radar_df_normalized = (radar_df[stats_cols] - stats_min) / (stats_max - stats_min) # Normalize
+                    radar_vals = radar_df[stats_cols].apply(pd.to_numeric, errors='coerce')
 
-                    player_norm = radar_df_normalized.loc[player_data['name']].reindex(stats_cols).fillna(0) # Normalize
-                    group_median = radar_df_normalized.drop(index=player_data['name'], errors='ignore').median().reindex(stats_cols).fillna(0) # Median
+                    # The percentile rank is established for each player by category (0 = lowest, 1 = highest)
+                    rank_pct = radar_vals.rank(pct=True, method='average', ascending=True)
 
+                    # We are reversing the metrics where ‘smaller = better’
+                    invert_stats = globals().get("invert_stats", set())
+                    for col in stats_cols:
+                        if col in invert_stats:
+                            rank_pct[col] = 1 - rank_pct[col]
+
+                    # The player's profile is standardised in percentiles.
+                    player_norm = rank_pct.loc[player_data['name']].reindex(stats_cols).fillna(0)
+
+                    # The median is calculated according to position category.
+                    group_median = (
+                        rank_pct.drop(index=player_data['name'], errors='ignore')
+                                .median()
+                                .reindex(stats_cols)
+                                .fillna(0)
+                    )
                     # Rating calculation if available
                     rating_text = f" - Rating : {round(player_rating, 2)}" if player_rating is not None else ""
 
@@ -1343,21 +1376,36 @@ def player_comparison():
 
                 # Génération du radar
                 if poste_cat and poste_cat in category_stats:
-                    stats_cols = [col for col in category_stats[poste_cat] if col in df.columns] # Récupération des catégories des positions de joueurs
+                    stats_cols = [col for col in category_stats[poste_cat] if col in df.columns]  # On récupère la catégories de stats selon le poste
 
-                    radar_df = df[df['sub_position'] == sub_position][['name'] + stats_cols].dropna(subset=stats_cols).copy()
-                    radar_df = radar_df.set_index('name')
+                    # Filtrer les statistiques des joueurs selon la catégorie de poste
+                    if 'poste_cat' not in df.columns:
+                        df = df.copy()
+                        df['poste_cat'] = df['sub_position'].map(position_category)
 
+                    radar_df = df[df['poste_cat'] == poste_cat][['name'] + stats_cols].copy()
+                    radar_df = radar_df.dropna(subset=stats_cols).set_index('name')
+
+                    # On s'assure que les 2 joueurs comparés sont inclus dans la référence
                     for p, pdata in [(player1, player1_data), (player2, player2_data)]:
                         if p not in radar_df.index:
-                            radar_df.loc[p] = pdata[stats_cols]
+                            radar_df.loc[p] = pd.Series(pdata).reindex(stats_cols)
 
-                    stats_min = radar_df[stats_cols].min()
-                    stats_max = radar_df[stats_cols].max()
-                    radar_df_normalized = (radar_df[stats_cols] - stats_min) / (stats_max - stats_min) # Normalisation
+                    radar_vals = radar_df[stats_cols].apply(pd.to_numeric, errors='coerce')
 
-                    player1_norm = radar_df_normalized.loc[player1].reindex(stats_cols).fillna(0) # Normalisation
-                    player2_norm = radar_df_normalized.loc[player2].reindex(stats_cols).fillna(0) # Normalisation
+                    # On évalue chaque statistique selon sa position au regard des autres joueurs ayant la même position
+                    rank_pct = radar_vals.rank(pct=True, method='average', ascending=True)
+
+                    # On inverse les métriques où "plus petit = mieux"
+                    invert_stats = globals().get("invert_stats", set())
+                    for col in stats_cols:
+                        if col in invert_stats:
+                            rank_pct[col] = 1 - rank_pct[col]
+
+                    # On normalise les valeurs par rang pour le radar
+                    player1_norm = rank_pct.loc[player1].reindex(stats_cols).fillna(0)
+                    player2_norm = rank_pct.loc[player2].reindex(stats_cols).fillna(0)
+
                     
                     player1_rating = player1_data.get("rating", None)
                     player2_rating = player2_data.get("rating", None)
@@ -1603,21 +1651,35 @@ def player_comparison():
 
                 # Radar generation
                 if poste_cat and poste_cat in category_stats:
-                    stats_cols = [col for col in category_stats[poste_cat] if col in df.columns] # Access to the category by position
+                    stats_cols = [col for col in category_stats[poste_cat] if col in df.columns]  # We retrieve the stat categories according to position.
 
-                    radar_df = df[df['sub_position'] == sub_position][['name'] + stats_cols].dropna(subset=stats_cols).copy()
-                    radar_df = radar_df.set_index('name')
+                    # Filter player statistics by position category
+                    if 'poste_cat' not in df.columns:
+                        df = df.copy()
+                        df['poste_cat'] = df['sub_position'].map(position_category)
 
+                    radar_df = df[df['poste_cat'] == poste_cat][['name'] + stats_cols].copy()
+                    radar_df = radar_df.dropna(subset=stats_cols).set_index('name')
+
+                    # We ensure that the two players being compared are included in the reference
                     for p, pdata in [(player1, player1_data), (player2, player2_data)]:
                         if p not in radar_df.index:
-                            radar_df.loc[p] = pdata[stats_cols]
+                            radar_df.loc[p] = pd.Series(pdata).reindex(stats_cols)
 
-                    stats_min = radar_df[stats_cols].min()
-                    stats_max = radar_df[stats_cols].max()
-                    radar_df_normalized = (radar_df[stats_cols] - stats_min) / (stats_max - stats_min) # Normalize
+                    radar_vals = radar_df[stats_cols].apply(pd.to_numeric, errors='coerce')
 
-                    player1_norm = radar_df_normalized.loc[player1].reindex(stats_cols).fillna(0) # Normalize
-                    player2_norm = radar_df_normalized.loc[player2].reindex(stats_cols).fillna(0) # Normalize
+                    # Each statistic is evaluated according to its position relative to other players in the same position
+                    rank_pct = radar_vals.rank(pct=True, method='average', ascending=True)
+
+                    # We are reversing the metrics where ‘smaller = better’
+                    invert_stats = globals().get("invert_stats", set())
+                    for col in stats_cols:
+                        if col in invert_stats:
+                            rank_pct[col] = 1 - rank_pct[col]
+
+                    # We normalise the values by rank for the radar.
+                    player1_norm = rank_pct.loc[player1].reindex(stats_cols).fillna(0)
+                    player2_norm = rank_pct.loc[player2].reindex(stats_cols).fillna(0)
 
                     player1_rating = player1_data.get("rating", None)
                     player2_rating = player2_data.get("rating", None)
@@ -2652,7 +2714,7 @@ def scout():
                 min_val, max_val = float(df[stat].min()), float(df[stat].max())
                 adv_stat_limits[stat] = st.slider(f"{stat} (min / max)", min_val, max_val, (min_val, max_val))
 
-        nb_players = st.slider("Nombre de joueurs à afficher", 3, 30, 10) # Choix de nombre de joueurs à afficher
+        nb_players = st.slider("Nombre de joueurs à afficher", 3, 1800, 10) # Choix de nombre de joueurs à afficher
         
         # Injecte du CSS pour centrer tous les boutons
         st.markdown(
@@ -2949,7 +3011,7 @@ def scout():
                 min_val, max_val = float(df[stat].min()), float(df[stat].max())
                 adv_stat_limits[stat] = st.slider(f"{stat} (min / max)", min_val, max_val, (min_val, max_val))
 
-        nb_players = st.slider("Number of players to display", 3, 30, 10) # Choice of the number of players to display
+        nb_players = st.slider("Number of players to display", 3, 1800, 10) # Choice of the number of players to display
 
         # Inject CSS to center all buttons
         st.markdown(
