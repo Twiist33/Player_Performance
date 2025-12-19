@@ -1925,7 +1925,7 @@ def ranking_basis():
                 'name', 'Statistique', 'Age', 'country_of_citizenship', 'current_club_name', 'sub_position','market_value_in_eur', 'contract_expiration_date'
             ]]
 
-            st.dataframe(final_df, use_container_width=True)
+            st.dataframe(final_df, width='stretch')
 
     else:
 
@@ -2095,7 +2095,7 @@ def ranking_basis():
                 'name', 'Statistic', 'Age', 'country_of_citizenship', 'current_club_name', 'sub_position', 'market_value_in_eur', 'contract_expiration_date'
             ]]
 
-            st.dataframe(final_df, use_container_width=True)
+            st.dataframe(final_df, width='stretch')
 
 # Page du classement des joueurs pour les statistiques brutes / Player ranking page by raw statistics
 def ranking():
@@ -2374,7 +2374,7 @@ def ranking():
                 'name', 'Statistique', 'Age', 'country_of_citizenship', 'current_club_name', 'sub_position','market_value_in_eur', 'contract_expiration_date'
             ]]
 
-            st.dataframe(final_df, use_container_width=True)
+            st.dataframe(final_df, width='stretch')
 
     else:
         st.markdown("<h4 style='text-align: center;'>🏆 Player rankings for raw statistics</h4>", unsafe_allow_html=True) # Display the title
@@ -2642,7 +2642,7 @@ def ranking():
                 'name', 'Statistic', 'Age', 'country_of_citizenship', 'current_club_name', 'market_value_in_eur', 'contract_expiration_date'
             ]]
 
-            st.dataframe(final_df, use_container_width=True)
+            st.dataframe(final_df, width='stretch')
 
 # Page de recherche de joueur / Player search page
 def scout():
@@ -2848,7 +2848,7 @@ def scout():
                 st.markdown(podium_html, unsafe_allow_html=True)
 
                 final_df = df_stat.drop(columns=["image_url"]) # Suppression de image_url pour la table finale
-                st.dataframe(final_df, use_container_width=True)
+                st.dataframe(final_df, width='stretch')
 
         # Sidebar résumé
         with st.sidebar:
@@ -3139,7 +3139,7 @@ def scout():
                 st.markdown(podium_html, unsafe_allow_html=True)
 
                 final_df = df_stat.drop(columns=["image_url"])
-                st.dataframe(final_df, use_container_width=True) # We didsplay the entire list of players asked
+                st.dataframe(final_df, width='stretch') # We didsplay the entire list of players asked
 
         # Sidebar summary
         with st.sidebar:
